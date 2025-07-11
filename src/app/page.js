@@ -1,4 +1,5 @@
 'use client';
+import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { useState, useEffect } from 'react';
 
@@ -6,34 +7,41 @@ export default function Home() {
   /* ==========================================
  상태 관리 변수
 ========================================== */
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
 
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+  const router = useRouter(); // ✅ Next.js 라우터 훅
   const [tasks, setTasks] = useState([]);
   const [user, setUser] = useState(null);
 
   /* ==========================================
-회원 가입 / 로그인 함수
+ 모달 폼 입력 값
 ========================================== */
-  // ✅ 회원가입 함수
-  const signUp = async () => {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-    });
-    console.log('회원가입:', data, error);
-  };
+  const [showModal, setShowModal] = useState(false);
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [intervalDays, setIntervalDays] = useState('');
+  const [targetCount, setTargetCount] = useState('');
+  const [startDate, setStartDate] = useState('');
 
-  // ✅ 로그인 함수
-  const signIn = async () => {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    console.log('로그인:', data, error);
-  };
+  //   /* ==========================================
+  // 회원 가입 / 로그인 함수
+  // ========================================== */
+  //   // ✅ 회원가입 함수
+  //   const signUp = async () => {
+  //     const { data, error } = await supabase.auth.signUp({
+  //       email,
+  //       password,
+  //     });
+  //     console.log('회원가입:', data, error);
+  //   };
+
+  //   // ✅ 로그인 함수
+  //   const signIn = async () => {
+  //     const { data, error } = await supabase.auth.signInWithPassword({
+  //       email,
+  //       password,
+  //     });
+  //     console.log('로그인:', data, error);
+  //   };
 
   // ✅ 로그인된 유저 가져오기
   useEffect(() => {
@@ -41,8 +49,11 @@ export default function Home() {
       const {
         data: { user },
       } = await supabase.auth.getUser();
-      console.log('👉 로그인 유저:', user);
-      setUser(user);
+      if (!user) {
+        router.push('/login');
+      } else {
+        setUser(user);
+      }
     };
     getUser();
   }, []);
@@ -51,36 +62,32 @@ export default function Home() {
     ✅ 결심 등록
   ================================= */
   const insertTask = async () => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-      alert('로그인 먼저!');
+    if (!title || !intervalDays || !targetCount || !startDate) {
+      alert('필수 값을 모두 입력해주세요!');
       return;
     }
 
-    const { data, error } = await supabase
-      .from('tasks')
-      .insert([
-        {
-          user_id: user.id,
-          title,
-          description,
-          status: 'in_progress',
-        },
-      ])
-      .select();
-
-    console.log('결심 등록:', data, error);
-    fetchTasks(); // 등록 후 리스트 갱신
+    const { data, error } = await supabase.from('tasks').insert([
+      {
+        user_id: user.id,
+        title,
+        description,
+        interval_days: parseInt(intervalDays),
+        target_count: parseInt(targetCount),
+        start_date,
+        status: '진행중',
+      },
+    ]);
+    console.log('등록:', data, error);
+    setShowModal(false);
+    fetchTasks();
   };
 
-  // ✅ tasks 가져오기
+  /* ================================
+    ✅ 결심 리스트 가져오기
+  ================================= */
   const fetchTasks = async () => {
-    const { data, error } = await supabase.from('tasks').select('*').order('created_at', { ascending: false });
-
-    console.log('👉 tasks:', data, error);
+    const { data, error } = await supabase.from('v_user_tasks').select('*').order('created_at', { ascending: false });
     setTasks(data || []);
   };
 
@@ -90,55 +97,57 @@ export default function Home() {
     }
   }, [user]);
 
-  // ✅ 오늘 체크하기
-  const handleCheck = async (taskId) => {
-    if (!user) {
-      console.log('로그인 필요');
-      return;
+  /* ================================
+    ✅ 오늘 체크 or 해제
+  ================================= */
+
+  const toggleCheck = async (taskId, isChecked) => {
+    if (isChecked) {
+      // 체크 Insert
+      await supabase.from('task_executions').insert([
+        {
+          task_id: taskId,
+          user_id: user.id,
+          executed_at: new Date().toISOString(),
+        },
+      ]);
+    } else {
+      // 해제 Delete (오늘 실행 기록만)
+      await supabase.rpc('delete_today_execution', {
+        task_id_input: taskId,
+        user_id_input: user.id,
+      });
     }
-
-    const payload = {
-      task_id: taskId,
-      user_id: user.id,
-      executed_at: new Date().toISOString(),
-    };
-
-    console.log('👉 INSERT payload:', payload);
-
-    const { data, error } = await supabase.from('task_executions').insert([payload]);
-
-    console.log('👉 INSERT result:', data, error);
-
-    // 다시 tasks 갱신
     fetchTasks();
   };
-
   /* ==========================================
 ✅ 렌더링
 ========================================== */
   return (
     <main style={{ padding: '2rem' }}>
-      <h1>Savvy Sloth 테스트</h1>
+      <h1>Savvy Sloth</h1>
 
-      <div>
-        <input type='email' placeholder='이메일' value={email} onChange={(e) => setEmail(e.target.value)} />
-        <input type='password' placeholder='비밀번호' value={password} onChange={(e) => setPassword(e.target.value)} />
-        <button onClick={signUp}>회원가입</button>
-        <button onClick={signIn}>로그인</button>
-      </div>
+      <button onClick={() => setShowModal(true)}>새 결심 등록하기</button>
+
+      {showModal && (
+        <div style={{ border: '1px solid #333', padding: '1rem', marginTop: '1rem' }}>
+          <h3>새 결심 등록</h3>
+          <input placeholder='제목' value={title} onChange={(e) => setTitle(e.target.value)} />
+          <br />
+          <input placeholder='주기 (일)' value={intervalDays} onChange={(e) => setIntervalDays(e.target.value)} />
+          <br />
+          <input placeholder='목표 횟수' value={targetCount} onChange={(e) => setTargetCount(e.target.value)} />
+          <br />
+          <input type='date' value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+          <br />
+          <button onClick={insertTask}>등록</button>
+          <button onClick={() => setShowModal(false)}>취소</button>
+        </div>
+      )}
 
       <hr />
 
-      <h2>✅ 결심 등록</h2>
-      <input placeholder='제목' value={title} onChange={(e) => setTitle(e.target.value)} />
-      <input placeholder='설명' value={description} onChange={(e) => setDescription(e.target.value)} />
-      <button onClick={insertTask}>등록하기</button>
-
-      <hr />
-
-      <h1>Savvy Sloth 결심 리스트</h1>
-
-      {tasks.length === 0 && <p>아직 등록된 결심이 없습니다.</p>}
+      {tasks.length === 0 && <p>등록된 결심이 없습니다.</p>}
 
       {tasks.map((task) => (
         <div
@@ -147,12 +156,15 @@ export default function Home() {
             border: '1px solid #ddd',
             padding: '1rem',
             marginBottom: '1rem',
-            backgroundColor: task.status === '유지' ? '#e6ffe6' : task.status === '경고' ? '#fff5e6' : '#ffe6e6',
           }}>
           <h3>{task.title}</h3>
+          <p>
+            주기: {task.interval_days}일, 목표: {task.target_count}회
+          </p>
           <p>상태: {task.status}</p>
-          <p>성공률: {(task.success_ratio * 100).toFixed(1)}%</p>
-          <button onClick={() => handleCheck(task.id)}>오늘 체크하기</button>
+          <label>
+            <input type='checkbox' checked={task.is_checked} onChange={(e) => toggleCheck(task.id, e.target.checked)} /> 오늘 체크
+          </label>
         </div>
       ))}
     </main>
