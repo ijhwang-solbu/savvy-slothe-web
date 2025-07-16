@@ -20,7 +20,6 @@ export default function Home() {
   const [description, setDescription] = useState('');
   const [intervalDays, setIntervalDays] = useState('');
   const [targetCount, setTargetCount] = useState('');
-  const [startDate, setStartDate] = useState('');
 
   //   /* ==========================================
   // 회원 가입 / 로그인 함수
@@ -62,7 +61,7 @@ export default function Home() {
     ✅ 결심 등록
   ================================= */
   const insertTask = async () => {
-    if (!title || !intervalDays || !targetCount || !startDate) {
+    if (!title || !intervalDays || !targetCount) {
       alert('필수 값을 모두 입력해주세요!');
       return;
     }
@@ -74,11 +73,9 @@ export default function Home() {
         description,
         interval_days: parseInt(intervalDays),
         target_count: parseInt(targetCount),
-        start_date,
         status: '진행중',
       },
     ]);
-    console.log('등록:', data, error);
     setShowModal(false);
     fetchTasks();
   };
@@ -103,21 +100,32 @@ export default function Home() {
 
   const toggleCheck = async (taskId, isChecked) => {
     if (isChecked) {
-      // 체크 Insert
-      await supabase.from('task_executions').insert([
+      const { data, error } = await supabase.from('task_executions').insert([
         {
           task_id: taskId,
           user_id: user.id,
-          executed_at: new Date().toISOString(),
+          executed_at: new Date(), // ← ISO 문자열 대신 Date 객체 사용
         },
       ]);
+
+      if (error) {
+        console.error('체크 실패:', error);
+        alert('체크 중 오류 발생!');
+        return;
+      }
     } else {
-      // 해제 Delete (오늘 실행 기록만)
-      await supabase.rpc('delete_today_execution', {
+      const { data, error } = await supabase.rpc('delete_today_execution', {
         task_id_input: taskId,
         user_id_input: user.id,
       });
+
+      if (error) {
+        console.error('해제 실패:', error);
+        alert('체크 해제 중 오류 발생!');
+        return;
+      }
     }
+
     fetchTasks();
   };
   /* ==========================================
@@ -137,9 +145,6 @@ export default function Home() {
           <input placeholder='주기 (일)' value={intervalDays} onChange={(e) => setIntervalDays(e.target.value)} />
           <br />
           <input placeholder='목표 횟수' value={targetCount} onChange={(e) => setTargetCount(e.target.value)} />
-          <br />
-          <input type='date' value={startDate} onChange={(e) => setStartDate(e.target.value)} />
-          <br />
           <button onClick={insertTask}>등록</button>
           <button onClick={() => setShowModal(false)}>취소</button>
         </div>
@@ -162,6 +167,9 @@ export default function Home() {
             주기: {task.interval_days}일, 목표: {task.target_count}회
           </p>
           <p>상태: {task.status}</p>
+          <p>시작일: {task.start_date}</p>
+          <p>마지막 실행일: {task.last_check_date || '—'}</p>
+          <p>성공률: {(task.success_ratio * 100).toFixed(1)}%</p>
           <label>
             <input type='checkbox' checked={task.is_checked} onChange={(e) => toggleCheck(task.id, e.target.checked)} /> 오늘 체크
           </label>
