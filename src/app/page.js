@@ -112,6 +112,24 @@ export default function Home() {
     ✅ 오늘 체크 or 해제
   ================================= */
 
+  //스타일
+  const inputStyle = {
+    padding: '0.5rem',
+    border: '1px solid #ccc',
+    borderRadius: '4px',
+    marginBottom: '0.5rem',
+    width: '100%',
+    fontSize: '1rem',
+    outline: 'none',
+  };
+
+  const btn = {
+    padding: '0.5rem 1rem',
+    border: '1px solid #333',
+    borderRadius: '5px',
+    marginTop: '5px',
+    marginRight: '5px',
+  };
   /* ==========================================
 ✅ 렌더링
 ========================================== */
@@ -135,13 +153,17 @@ export default function Home() {
       {showModal && (
         <div style={{ border: '1px solid #333', padding: '1rem', marginTop: '0.5rem' }}>
           <h3>새 결심 등록</h3>
-          <input placeholder='제목' value={title} onChange={(e) => setTitle(e.target.value)} />
+          <input style={inputStyle} placeholder='제목' value={title} onChange={(e) => setTitle(e.target.value)} />
           <br />
-          <input placeholder='주기 (일)' value={intervalDays} onChange={(e) => setIntervalDays(e.target.value)} />
+          <input style={inputStyle} placeholder='주기 (일)' value={intervalDays} onChange={(e) => setIntervalDays(e.target.value)} />
           <br />
-          <input placeholder='목표 횟수' value={targetCount} onChange={(e) => setTargetCount(e.target.value)} />
-          <button onClick={insertTask}>등록</button>
-          <button onClick={() => setShowModal(false)}>취소</button>
+          <input style={inputStyle} placeholder='목표 횟수' value={targetCount} onChange={(e) => setTargetCount(e.target.value)} />
+          <button onClick={insertTask} style={{ ...btn, background: '#f4e3ffff' }}>
+            등록
+          </button>
+          <button onClick={() => setShowModal(false)} style={btn}>
+            취소
+          </button>
         </div>
       )}
 

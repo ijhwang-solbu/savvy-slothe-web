@@ -51,6 +51,23 @@ export default function Login() {
     }
   };
 
+  const btn = {
+    padding: '0.5rem 1rem',
+    border: '1px solid #333',
+    borderRadius: '5px',
+    marginTop: '5px',
+    marginRight: '5px',
+  };
+  const inputStyle = {
+    padding: '0.5rem',
+    border: '1px solid #ccc',
+    borderRadius: '4px',
+    marginBottom: '0.5rem',
+    width: '100%',
+    fontSize: '1rem',
+    outline: 'none',
+  };
+
   /* ==========================================
 ✅ 렌더링
 ========================================== */
@@ -60,10 +77,16 @@ export default function Login() {
       <h3>로그인해 주세요.</h3>
 
       <div>
-        <input type='email' placeholder='이메일' value={email} onChange={(e) => setEmail(e.target.value)} />
-        <input type='password' placeholder='비밀번호' value={password} onChange={(e) => setPassword(e.target.value)} />
-        <button onClick={signUp}>회원가입</button>
-        <button onClick={signIn}>로그인</button>
+        <input type='email' placeholder='이메일' style={inputStyle} value={email} onChange={(e) => setEmail(e.target.value)} />
+        <input type='password' placeholder='비밀번호' style={inputStyle} value={password} onChange={(e) => setPassword(e.target.value)} />
+      </div>
+      <div>
+        <button onClick={signUp} style={{ ...btn, background: '#f4e3ffff' }}>
+          회원가입
+        </button>
+        <button onClick={signIn} style={{ ...btn, background: '#ccffd7ff' }}>
+          로그인
+        </button>
       </div>
     </main>
   );
