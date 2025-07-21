@@ -3,6 +3,7 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { useState, useEffect } from 'react';
 import TaskExecutionPanel from './components/TaskExecutionPanel';
+import Link from 'next/link';
 
 export default function Home() {
   /* ==========================================
@@ -58,6 +59,16 @@ export default function Home() {
     getUser();
   }, []);
 
+  // 시간대 보정 함수 시작
+
+  const getKstTodayDateString = () => {
+    const now = new Date();
+    const kst = new Date(now.getTime() + 9 * 60 * 60 * 1000); // 한국 기준 시각
+    return kst.toISOString().slice(0, 10); // YYYY-MM-DD 형태
+  };
+
+  // 시간대 보정 함수 끝
+
   /* ================================
     ✅ 결심 등록
   ================================= */
@@ -66,7 +77,6 @@ export default function Home() {
       alert('필수 값을 모두 입력해주세요!');
       return;
     }
-
     const { data, error } = await supabase.from('tasks').insert([
       {
         user_id: user.id,
@@ -75,6 +85,7 @@ export default function Home() {
         interval_days: parseInt(intervalDays),
         target_count: parseInt(targetCount),
         status: '진행중',
+        start_date: getKstTodayDateString(),
       },
     ]);
     setShowModal(false);
@@ -101,36 +112,6 @@ export default function Home() {
     ✅ 오늘 체크 or 해제
   ================================= */
 
-  const toggleCheck = async (taskId, isChecked) => {
-    if (isChecked) {
-      const { data, error } = await supabase.from('task_executions').insert([
-        {
-          task_id: taskId,
-          user_id: user.id,
-          executed_at: new Date(), // ← ISO 문자열 대신 Date 객체 사용
-        },
-      ]);
-
-      if (error) {
-        console.error('체크 실패:', error);
-        alert('체크 중 오류 발생!');
-        return;
-      }
-    } else {
-      const { data, error } = await supabase.rpc('delete_today_execution', {
-        task_id_input: taskId,
-        user_id_input: user.id,
-      });
-
-      if (error) {
-        console.error('해제 실패:', error);
-        alert('체크 해제 중 오류 발생!');
-        return;
-      }
-    }
-
-    fetchTasks();
-  };
   /* ==========================================
 ✅ 렌더링
 ========================================== */
@@ -138,10 +119,21 @@ export default function Home() {
     <main style={{ padding: '2rem' }}>
       <h1>Savvy Sloth</h1>
 
-      <button onClick={() => setShowModal(true)}>새 결심 등록하기</button>
+      <button
+        style={{
+          padding: '0.5rem 1rem',
+          border: '1px solid #333',
+          borderRadius: '5px',
+          background: '#f4e3ffff',
+          marginTop: '5px',
+          marginBottom: '5px',
+        }}
+        onClick={() => setShowModal(true)}>
+        <strong>새 결심 등록하기</strong>
+      </button>
 
       {showModal && (
-        <div style={{ border: '1px solid #333', padding: '1rem', marginTop: '1rem' }}>
+        <div style={{ border: '1px solid #333', padding: '1rem', marginTop: '0.5rem' }}>
           <h3>새 결심 등록</h3>
           <input placeholder='제목' value={title} onChange={(e) => setTitle(e.target.value)} />
           <br />
@@ -157,25 +149,48 @@ export default function Home() {
 
       {tasks.length === 0 && <p>등록된 결심이 없습니다.</p>}
 
-      {tasks.map((task) => (
-        <div
-          key={task.id}
-          style={{
-            border: '1px solid #ddd',
-            padding: '1rem',
-            marginBottom: '1rem',
-          }}>
-          <h3>{task.title}</h3>
-          <p>
-            주기: {task.interval_days}일, 목표: {task.target_count}회
-          </p>
-          <p>상태: {task.status}</p>
-          <p>시작일: {task.start_date}</p>
-          <p>마지막 실행일: {task.last_check_date || '—'}</p>
-          <p>성공률: {(task.success_ratio * 100).toFixed(1)}%</p>
-          <TaskExecutionPanel taskId={task.id} />
-        </div>
-      ))}
+      {tasks.map((task) => {
+        const today = new Date(); // 브라우저가 한국 시간대라면 이미 KST임
+        const startDate = new Date(task.start_date);
+        const daysPassed = Math.floor((new Date(today.getFullYear(), today.getMonth(), today.getDate()) - new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate())) / (1000 * 60 * 60 * 24)) + 1;
+        return (
+          <div
+            key={task.id}
+            style={{
+              border: '1px solid #ddd',
+              padding: '1rem',
+              marginBottom: '1rem',
+            }}>
+            <h3>{task.title}</h3>
+            <p>
+              주기: {task.interval_days}일, 목표: {task.target_count}회
+            </p>
+            {/* <p>상태: {task.status}</p> */}
+            <p>시작일: {task.start_date}</p>
+            <p>경과일: {daysPassed}</p>
+            <p>
+              실행횟수: {task.execution_count}회{' '}
+              <Link
+                href={`/history/${task.id}`}
+                style={{
+                  padding: '2px 6px',
+                  fontSize: '0.8rem',
+                  border: '1px solid #888',
+                  borderRadius: '4px',
+                  marginLeft: '8px',
+                  textDecoration: 'none',
+                  color: '#333',
+                  backgroundColor: '#f3f3f3',
+                }}>
+                히스토리
+              </Link>
+            </p>
+            <p>마지막 실행일: {task.last_check_date || '—'}</p>
+            <p>성공률: {(task.success_ratio * 100).toFixed(1)}%</p>
+            <TaskExecutionPanel taskId={task.id} userId={user?.id} onComplete={fetchTasks} />
+          </div>
+        );
+      })}
     </main>
   );
 }

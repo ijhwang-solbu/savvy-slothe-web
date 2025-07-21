@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 
-export default function TaskExecutionPanel({ taskId }) {
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().slice(0, 10));
+export default function TaskExecutionPanel({ taskId, userId, onComplete }) {
+  const getKstDate = () => new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().slice(0, 10); // yyyy-mm-dd
+
+  const [selectedDate, setSelectedDate] = useState(getKstDate());
   const [isExecuted, setIsExecuted] = useState(false);
 
   useEffect(() => {
@@ -14,15 +16,23 @@ export default function TaskExecutionPanel({ taskId }) {
   }, [selectedDate, taskId]);
 
   const handleExecute = async () => {
+    //userID Null 방어
+    if (!userId) {
+      alert('로그인 정보가 없습니다');
+      return;
+    }
+
     const { error } = await supabase.from('task_executions').insert([
       {
         task_id: taskId,
         executed_at: selectedDate,
+        user_id: userId,
       },
     ]);
     if (!error) {
       setIsExecuted(true);
       alert('완료 처리되었습니다!');
+      if (onComplete) onComplete();
     } else {
       alert('실행 중 오류 발생!');
       console.error(error);
