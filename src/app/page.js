@@ -2,6 +2,7 @@
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { useState, useEffect } from 'react';
+import TaskExecutionPanel from './components/TaskExecutionPanel';
 
 export default function Home() {
   /* ==========================================
@@ -94,6 +95,8 @@ export default function Home() {
     }
   }, [user]);
 
+  // 유저 아이디 확인
+  // console.log('유저 ID (프론트):', user.id);
   /* ================================
     ✅ 오늘 체크 or 해제
   ================================= */
@@ -170,9 +173,7 @@ export default function Home() {
           <p>시작일: {task.start_date}</p>
           <p>마지막 실행일: {task.last_check_date || '—'}</p>
           <p>성공률: {(task.success_ratio * 100).toFixed(1)}%</p>
-          <label>
-            <input type='checkbox' checked={task.is_checked} onChange={(e) => toggleCheck(task.id, e.target.checked)} /> 오늘 체크
-          </label>
+          <TaskExecutionPanel taskId={task.id} />
         </div>
       ))}
     </main>
