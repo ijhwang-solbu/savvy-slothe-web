@@ -1,0 +1,24 @@
+.btn {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: background-color 0.2s ease;
+  margin-top: 5px;
+  margin-right: 5px;
+  color: #000;
+  cursor: pointer;
+}
+
+.signin{
+  background-color: #f4e3ffff
+}
+.signin:hover{
+  background-color: #e1bafd; /* hover 시 살짝 회색 (Tailwind의 gray-100) */
+}
+
+.lgn{
+  background-color: #ccffd7ff
+}
+.lgn:hover{
+  background-color: #82ff9f; /* hover 시 살짝 회색 (Tailwind의 gray-100) */
+}

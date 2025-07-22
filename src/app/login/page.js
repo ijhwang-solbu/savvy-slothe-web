@@ -2,6 +2,8 @@
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { useState, useEffect } from 'react';
+import LoginKakaoButton from '../components/LoginKakaoButton';
+import styles from './AuthButtons.module.css'
 
 export default function Login() {
   /* ==========================================
@@ -51,13 +53,18 @@ export default function Login() {
     }
   };
 
+  //text-black py-2 px-4 rounded-md shadow-sm hover:bg-yellow-400 transition
+
   const btn = {
     padding: '0.5rem 1rem',
-    border: '1px solid #333',
-    borderRadius: '5px',
+    // border: '1px solid #333',
+    borderRadius: '6px',
+    boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
+    transition: 'background-color 0.2s ease',
     marginTop: '5px',
     marginRight: '5px',
     color: '#000',
+    cursor: 'pointer'
   };
   const inputStyle = {
     padding: '0.5rem',
@@ -89,12 +96,16 @@ export default function Login() {
         <input type='password' placeholder='비밀번호' style={inputStyle} value={password} onChange={(e) => setPassword(e.target.value)} />
       </div>
       <div>
-        <button onClick={signUp} style={{ ...btn, background: '#f4e3ffff' }}>
+        {/* <button onClick={signUp} style={{ ...btn, background: '#f4e3ffff' }}>
+          회원가입
+        </button> */}
+        <button onClick={signUp} className={`${styles.btn} ${styles.signin}`}>
           회원가입
         </button>
-        <button onClick={signIn} style={{ ...btn, background: '#ccffd7ff' }}>
+        <button onClick={signIn} className={`${styles.btn} ${styles.lgn}`}>
           로그인
         </button>
+        <LoginKakaoButton /> 
       </div>
     </main>
   );
