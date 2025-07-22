@@ -3,6 +3,7 @@
 import { useRouter, useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
+import AutoLogoutWrapper from '@/app/components/AutoLogoutWrapper';
 
 export default function TaskHistoryPage() {
   const router = useRouter();
@@ -70,6 +71,7 @@ export default function TaskHistoryPage() {
   };
 
   return (
+    <AutoLogoutWrapper>
     <div style={{ padding: '2rem' }}>
       <h2>{taskTitle} - 히스토리</h2>
       <p>기록 수: {executions.length}건</p>
@@ -119,5 +121,6 @@ export default function TaskHistoryPage() {
         </div>
       )}
     </div>
+    </AutoLogoutWrapper>
   );
 }

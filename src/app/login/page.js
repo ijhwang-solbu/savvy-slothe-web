@@ -57,6 +57,7 @@ export default function Login() {
     borderRadius: '5px',
     marginTop: '5px',
     marginRight: '5px',
+    color: '#000',
   };
   const inputStyle = {
     padding: '0.5rem',

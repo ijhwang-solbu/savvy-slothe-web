@@ -4,6 +4,7 @@ import { supabase } from '@/lib/supabase';
 import { useState, useEffect } from 'react';
 import TaskExecutionPanel from './components/TaskExecutionPanel';
 import Link from 'next/link';
+import AutoLogoutWrapper from './components/AutoLogoutWrapper';
 
 export default function Home() {
   /* ==========================================
@@ -23,26 +24,7 @@ export default function Home() {
   const [intervalDays, setIntervalDays] = useState('');
   const [targetCount, setTargetCount] = useState('');
 
-  //   /* ==========================================
-  // 회원 가입 / 로그인 함수
-  // ========================================== */
-  //   // ✅ 회원가입 함수
-  //   const signUp = async () => {
-  //     const { data, error } = await supabase.auth.signUp({
-  //       email,
-  //       password,
-  //     });
-  //     console.log('회원가입:', data, error);
-  //   };
 
-  //   // ✅ 로그인 함수
-  //   const signIn = async () => {
-  //     const { data, error } = await supabase.auth.signInWithPassword({
-  //       email,
-  //       password,
-  //     });
-  //     console.log('로그인:', data, error);
-  //   };
 
   // ✅ 로그인된 유저 가져오기
   useEffect(() => {
@@ -129,11 +111,13 @@ export default function Home() {
     borderRadius: '5px',
     marginTop: '5px',
     marginRight: '5px',
+    color: '#000',
   };
   /* ==========================================
 ✅ 렌더링
 ========================================== */
   return (
+    <AutoLogoutWrapper>
     <main style={{ padding: '2rem' }}>
       <h1>Savvy Sloth</h1>
 
@@ -145,6 +129,7 @@ export default function Home() {
           background: '#f4e3ffff',
           marginTop: '5px',
           marginBottom: '5px',
+          color: '#000',
         }}
         onClick={() => setShowModal(true)}>
         <strong>새 결심 등록하기</strong>
@@ -214,5 +199,6 @@ export default function Home() {
         );
       })}
     </main>
+    </AutoLogoutWrapper>
   );
 }
