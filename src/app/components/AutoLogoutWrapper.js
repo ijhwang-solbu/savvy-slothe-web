@@ -16,7 +16,7 @@ export default function AutoLogoutWrapper({ children }) {
   const resetTimer = useCallback(() => {
   clearTimeout(timerRef.current);
   timerRef.current = setTimeout(logout, 5 * 60 * 60 * 1000); // 5시간
-}, []);
+}, [logout]);
 
   useEffect(() => {
     resetTimer();
