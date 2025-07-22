@@ -136,6 +136,7 @@ export default function Home() {
       marginLeft: '10px',
       cursor: 'pointer',
       transition: 'background-color 0.2s ease',
+      color : '#000',
     }}
     onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#d1d5db')}
     onMouseOut={(e) => (e.currentTarget.style.backgroundColor = '#e5e7eb')}
