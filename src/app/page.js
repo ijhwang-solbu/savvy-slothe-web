@@ -41,6 +41,12 @@ export default function Home() {
     getUser();
   }, [router]);
 
+  //  ✅로그아웃 함수
+  const handleLogout = async () => {
+  await supabase.auth.signOut();
+  router.push('/login') //refresh(); // 혹은 router.push('/login') 등으로 이동 처리 가능
+};
+
   // 시간대 보정 함수 시작
 
   const getKstTodayDateString = () => {
@@ -119,7 +125,24 @@ export default function Home() {
   return (
     <AutoLogoutWrapper>
     <main style={{ padding: '2rem' }}>
-      <h1>Savvy Sloth</h1>
+      <h1 style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>Savvy Sloth
+        <button
+    onClick={handleLogout}
+    style={{
+      padding: '0.5rem 1rem',
+      border: '1px solid #333',
+      borderRadius: '5px',
+      backgroundColor: '#e5e7eb',
+      marginLeft: '10px',
+      cursor: 'pointer',
+      transition: 'background-color 0.2s ease',
+    }}
+    onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#d1d5db')}
+    onMouseOut={(e) => (e.currentTarget.style.backgroundColor = '#e5e7eb')}
+  >
+    로그아웃
+  </button>
+      </h1>
 
       <button
         style={{

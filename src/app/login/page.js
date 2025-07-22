@@ -53,7 +53,6 @@ export default function Login() {
     }
   };
 
-  //text-black py-2 px-4 rounded-md shadow-sm hover:bg-yellow-400 transition
 
   const btn = {
     padding: '0.5rem 1rem',

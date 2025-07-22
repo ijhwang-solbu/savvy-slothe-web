@@ -17,7 +17,7 @@ export default function LoginKakaoButton() {
   return (
     <button
       onClick={handleKakaoLogin}
-      className="w-full max-w-xs bg-yellow-300 text-black py-2 px-4 rounded-md shadow-sm hover:bg-yellow-400 transition cursor-pointer"
+      className="w-full max-w-xs bg-yellow-300 text-black py-2 px-4 rounded-md shadow-sm hover:bg-yellow-400 transition cursor-pointer mt-[5px]"
     >
       카카오로 시작하기
     </button>
