@@ -39,7 +39,7 @@ export default function Home() {
       }
     };
     getUser();
-  }, []);
+  }, [router]);
 
   // 시간대 보정 함수 시작
 

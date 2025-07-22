@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter, useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import AutoLogoutWrapper from '@/app/components/AutoLogoutWrapper';
 
@@ -17,7 +17,7 @@ export default function TaskHistoryPage() {
   const [showModal, setShowModal] = useState(false);
 
   // ✅ 히스토리 불러오기
-  const fetchHistory = async () => {
+  const fetchHistory = useCallback(async () => {
     if (!taskId) return;
     const { data: task } = await supabase.from('tasks').select('title').eq('id', taskId).single();
     const { data: history } = await supabase.from('task_executions').select('executed_at').eq('task_id', taskId).order('executed_at', { ascending: true });
@@ -27,12 +27,12 @@ export default function TaskHistoryPage() {
     setSelectedDates([]);
     // console.log('taskId:', taskId);
     // console.log('executions:', history);
-  };
+  }, [taskId]);
 
   useEffect(() => {
-    // console.log('taskId:', taskId);
     fetchHistory();
-  }, [taskId]);
+  }, [fetchHistory]);
+
 
   const toggleDate = (date) => {
     setSelectedDates((prev) => (prev.includes(date) ? prev.filter((d) => d !== date) : [...prev, date]));
