@@ -163,13 +163,13 @@ export default function Home() {
             <h3 className={styles.sectionTitle}>새로운 결심</h3>
             <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '0.5rem', margin: '1rem 0rem' }}>
               <input style={{ ...inputStyle, width: '8rem' }} placeholder='무엇을' value={title} onChange={(e) => setTitle(e.target.value)} />
-              <span>을 대~충</span>
+              <span>을 </span>
 
               <input style={{ ...inputStyle, width: '4rem' }} placeholder='5' value={intervalDays} onChange={(e) => setIntervalDays(e.target.value)} type='number' min='1' />
               <span>일에</span>
 
               <input style={{ ...inputStyle, width: '4rem' }} placeholder='2' value={targetCount} onChange={(e) => setTargetCount(e.target.value)} type='number' min='1' />
-              <span>번씩만 슬슬 해보까?</span>
+              <span>번씩만이라도 해보까?</span>
             </div>
 
             <div>
