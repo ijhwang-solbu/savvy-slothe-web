@@ -3,7 +3,7 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { useState, useEffect } from 'react';
 import LoginKakaoButton from '../components/LoginKakaoButton';
-import styles from './AuthButtons.module.css'
+import styles from './AuthButtons.module.css';
 
 export default function Login() {
   /* ==========================================
@@ -53,7 +53,6 @@ export default function Login() {
     }
   };
 
-
   const btn = {
     padding: '0.5rem 1rem',
     // border: '1px solid #333',
@@ -63,7 +62,7 @@ export default function Login() {
     marginTop: '5px',
     marginRight: '5px',
     color: '#000',
-    cursor: 'pointer'
+    cursor: 'pointer',
   };
   const inputStyle = {
     padding: '0.5rem',
@@ -81,12 +80,18 @@ export default function Login() {
   return (
     <main style={{ padding: '2rem' }}>
       <h1>안녕하세요. Savvy-Sloth입니다.</h1>
-      <div style={{marginBottom :'10px', marginTop :'10px',}}>
-        <p><strong>작심삼일</strong>은</p>
-        <p>&quot;대~충 3일에 한 번씩 하고싶은데, 20일 놀고 벼락치기 10일도 성공이라고 해주면 안되나?&quot;</p><p>라는 생각에서 시작한 <strong>적당히 나태한 할일 관리 프로젝트입니다.</strong></p>
-        <p>물론 짧은 주기의 반복이 중요한 건 알지만, 안하는 것보다는 나으니까요. <del>반박 시 님 말이 다 맞음.</del></p>
+      <div style={{ marginBottom: '10px', marginTop: '10px' }}>
+        <p>
+          <strong>작심삼일</strong>은
+        </p>
+        <p>&quot;대~충 3일에 한 번씩 하고싶은데, 20일 놀고 벼락치기 10일도 성공이라고 해주면 안되나?&quot;</p>
+        <p>
+          라는 생각에서 시작한 <strong>적당히 나태한 할일 관리 프로젝트입니다.</strong>
+        </p>
+        <p>
+          물론 짧은 주기의 반복이 중요한 건 알지만, 안하는 것보다는 나으니까요. <del>반박 시 님 말이 다 맞음.</del>
+        </p>
       </div>
-
 
       <h3>로그인해 주세요.</h3>
 
@@ -95,16 +100,13 @@ export default function Login() {
         <input type='password' placeholder='비밀번호' style={inputStyle} value={password} onChange={(e) => setPassword(e.target.value)} />
       </div>
       <div>
-        {/* <button onClick={signUp} style={{ ...btn, background: '#f4e3ffff' }}>
-          회원가입
-        </button> */}
         <button onClick={signUp} className={`${styles.btn} ${styles.signin}`}>
           회원가입
         </button>
         <button onClick={signIn} className={`${styles.btn} ${styles.lgn}`}>
           로그인
         </button>
-        <LoginKakaoButton /> 
+        <LoginKakaoButton />
       </div>
     </main>
   );

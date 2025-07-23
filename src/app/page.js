@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import TaskExecutionPanel from './components/TaskExecutionPanel';
 import Link from 'next/link';
 import AutoLogoutWrapper from './components/AutoLogoutWrapper';
+import styles from './text.module.css';
 
 export default function Home() {
   /* ==========================================
@@ -24,8 +25,6 @@ export default function Home() {
   const [intervalDays, setIntervalDays] = useState('');
   const [targetCount, setTargetCount] = useState('');
 
-
-
   // ✅ 로그인된 유저 가져오기
   useEffect(() => {
     const getUser = async () => {
@@ -43,9 +42,9 @@ export default function Home() {
 
   //  ✅로그아웃 함수
   const handleLogout = async () => {
-  await supabase.auth.signOut();
-  router.push('/login') //refresh(); // 혹은 router.push('/login') 등으로 이동 처리 가능
-};
+    await supabase.auth.signOut();
+    router.push('/login'); //refresh(); // 혹은 router.push('/login') 등으로 이동 처리 가능
+  };
 
   // 시간대 보정 함수 시작
 
@@ -124,105 +123,163 @@ export default function Home() {
 ========================================== */
   return (
     <AutoLogoutWrapper>
-    <main style={{ padding: '2rem' }}>
-      <h1 style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>Savvy Sloth
-        <button
-    onClick={handleLogout}
-    style={{
-      padding: '0.5rem 1rem',
-      border: '1px solid #333',
-      borderRadius: '5px',
-      backgroundColor: '#e5e7eb',
-      marginLeft: '10px',
-      cursor: 'pointer',
-      transition: 'background-color 0.2s ease',
-      color : '#000',
-    }}
-    onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#d1d5db')}
-    onMouseOut={(e) => (e.currentTarget.style.backgroundColor = '#e5e7eb')}
-  >
-    로그아웃
-  </button>
-      </h1>
-
-      <button
-        style={{
-          padding: '0.5rem 1rem',
-          border: '1px solid #333',
-          borderRadius: '5px',
-          background: '#f4e3ffff',
-          marginTop: '5px',
-          marginBottom: '5px',
-          color: '#000',
-        }}
-        onClick={() => setShowModal(true)}>
-        <strong>새 결심 등록하기</strong>
-      </button>
-
-      {showModal && (
-        <div style={{ border: '1px solid #333', padding: '1rem', marginTop: '0.5rem' }}>
-          <h3>새 결심 등록</h3>
-          <input style={inputStyle} placeholder='제목' value={title} onChange={(e) => setTitle(e.target.value)} />
-          <br />
-          <input style={inputStyle} placeholder='주기 (일)' value={intervalDays} onChange={(e) => setIntervalDays(e.target.value)} />
-          <br />
-          <input style={inputStyle} placeholder='목표 횟수' value={targetCount} onChange={(e) => setTargetCount(e.target.value)} />
-          <button onClick={insertTask} style={{ ...btn, background: '#f4e3ffff' }}>
-            등록
-          </button>
-          <button onClick={() => setShowModal(false)} style={btn}>
-            취소
-          </button>
-        </div>
-      )}
-
-      <hr />
-
-      {tasks.length === 0 && <p>등록된 결심이 없습니다.</p>}
-
-      {tasks.map((task) => {
-        const today = new Date(); // 브라우저가 한국 시간대라면 이미 KST임
-        const startDate = new Date(task.start_date);
-        const daysPassed = Math.floor((new Date(today.getFullYear(), today.getMonth(), today.getDate()) - new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate())) / (1000 * 60 * 60 * 24)) + 1;
-        return (
-          <div
-            key={task.id}
+      <main style={{ padding: '2rem' }}>
+        <h1 style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          Savvy Sloth
+          <button
+            onClick={handleLogout}
             style={{
-              border: '1px solid #ddd',
-              padding: '1rem',
-              marginBottom: '1rem',
-            }}>
-            <h3>{task.title}</h3>
-            <p>
-              주기: {task.interval_days}일, 목표: {task.target_count}회
-            </p>
-            {/* <p>상태: {task.status}</p> */}
-            <p>시작일: {task.start_date}</p>
-            <p>경과일: {daysPassed}</p>
-            <p>
-              실행횟수: {task.execution_count}회{' '}
-              <Link
-                href={`/history/${task.id}`}
-                style={{
-                  padding: '2px 6px',
-                  fontSize: '0.8rem',
-                  border: '1px solid #888',
-                  borderRadius: '4px',
-                  marginLeft: '8px',
-                  textDecoration: 'none',
-                  color: '#333',
-                  backgroundColor: '#f3f3f3',
-                }}>
-                히스토리
-              </Link>
-            </p>
-            <p>마지막 실행일: {task.last_check_date || '—'}</p>
-            <p>성공률: {(task.success_ratio * 100).toFixed(1)}%</p>
-            <TaskExecutionPanel taskId={task.id} userId={user?.id} onComplete={fetchTasks} />
+              padding: '0.5rem 1rem',
+              border: '1px solid #333',
+              borderRadius: '5px',
+              backgroundColor: '#e5e7eb',
+              marginLeft: '10px',
+              cursor: 'pointer',
+              transition: 'background-color 0.2s ease',
+              color: '#000',
+            }}
+            onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#d1d5db')}
+            onMouseOut={(e) => (e.currentTarget.style.backgroundColor = '#e5e7eb')}>
+            로그아웃
+          </button>
+        </h1>
+
+        <button
+          style={{
+            padding: '0.5rem 1rem',
+            border: '1px solid #333',
+            borderRadius: '5px',
+            background: '#f4e3ffff',
+            marginTop: '5px',
+            marginBottom: '5px',
+            color: '#000',
+          }}
+          onClick={() => setShowModal(true)}>
+          <strong>새 결심 등록하기</strong>
+        </button>
+
+        {showModal && (
+          <div style={{ border: '1px solid #333', padding: '1rem', marginTop: '0.5rem' }}>
+            <h3 className={styles.sectionTitle}>새로운 결심</h3>
+            <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '0.5rem', margin: '1rem 0rem' }}>
+              <input style={{ ...inputStyle, width: '8rem' }} placeholder='무엇을' value={title} onChange={(e) => setTitle(e.target.value)} />
+              <span>을 대~충</span>
+
+              <input style={{ ...inputStyle, width: '4rem' }} placeholder='5' value={intervalDays} onChange={(e) => setIntervalDays(e.target.value)} type='number' min='1' />
+              <span>일에</span>
+
+              <input style={{ ...inputStyle, width: '4rem' }} placeholder='2' value={targetCount} onChange={(e) => setTargetCount(e.target.value)} type='number' min='1' />
+              <span>번씩만 슬슬 해보까?</span>
+            </div>
+
+            <div>
+              <button onClick={insertTask} style={{ ...btn, background: '#f4e3ffff' }}>
+                등록
+              </button>
+              <button onClick={() => setShowModal(false)} style={btn}>
+                취소
+              </button>
+            </div>
           </div>
-        );
-      })}
-    </main>
+        )}
+
+        <hr />
+
+        {tasks.length === 0 && <p>등록된 결심이 없습니다.</p>}
+
+        {tasks.map((task) => {
+          const today = new Date(); // 브라우저가 한국 시간대라면 이미 KST임
+          const startDate = new Date(task.start_date);
+          const daysPassed = Math.floor((new Date(today.getFullYear(), today.getMonth(), today.getDate()) - new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate())) / (1000 * 60 * 60 * 24)) + 1;
+          return (
+            <div
+              key={task.id}
+              style={{
+                border: '1px solid #ddd',
+                padding: '1rem',
+                marginBottom: '1rem',
+              }}>
+              <h3 className={styles.sectionTitle}>{task.title}</h3>
+              <p style={{ marginBottom: '5px' }}>
+                <strong>
+                  {task.interval_days}일에 {task.target_count}번 씩 하기
+                </strong>
+                로 했는데요.
+              </p>
+              {/* <p>상태: {task.status}</p> */}
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  flexWrap: 'wrap', // ✅ 작아지면 줄바꿈
+                  rowGap: '0.5rem',
+                }}>
+                <div style={{ marginRight: '10px' }}>
+                  <p>
+                    <strong>{task.start_date}</strong>에 시작해서
+                  </p>
+                  <p>
+                    <strong>{daysPassed}일</strong> 동안 <strong>{task.execution_count}번</strong> 진행했네요.
+                  </p>
+                </div>
+                <Link
+                  href={`/history/${task.id}`}
+                  style={{
+                    padding: '6px 10px',
+                    fontSize: '0.8rem',
+                    border: '1px solid #888',
+                    borderRadius: '4px',
+                    // marginLeft: '12px',
+                    textDecoration: 'none',
+                    color: '#333',
+                    backgroundColor: '#f3f3f3',
+                  }}>
+                  히스토리
+                </Link>
+              </div>
+              {/* <p>마지막 실행일: {task.last_check_date || '—'}</p> */}
+
+              {/* 성공률 */}
+              {task.execution_count === 0 ? (
+                // 처음 시작일 때 메시지
+                <p style={{ marginTop: '0.5rem', fontWeight: '500', color: '#6B7280' }}>이제 시작해 볼까요?</p>
+              ) : (
+                // 실행한 적 있는 경우: 게이지 + 메시지
+                <div style={{ marginTop: '0.5rem' }}>
+                  <p style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>현재 페이스: {(task.success_ratio * 100).toFixed(1)}%</p>
+
+                  <div
+                    style={{
+                      width: '100%',
+                      height: '10px',
+                      backgroundColor: '#eee',
+                      borderRadius: '5px',
+                      overflow: 'hidden',
+                    }}>
+                    <div
+                      style={{
+                        width: `${(task.success_ratio * 100).toFixed(1)}%`,
+                        height: '100%',
+                        backgroundColor: task.success_ratio >= 1.1 ? '#22c55e' : task.success_ratio >= 0.8 ? '#60a5fa' : task.success_ratio >= 0.6 ? '#facc15' : '#ef4444',
+                        transition: 'width 0.5s ease',
+                      }}
+                    />
+                  </div>
+
+                  {/* 상태 메시지 */}
+                  {task.success_ratio >= 1.1 && <p style={{ color: '#22c55e', marginTop: '4px' }}>완벽 페이스 유지 중! 날아가요!</p>}
+                  {task.success_ratio >= 0.9 && task.success_ratio < 1.1 && <p style={{ color: '#60a5fa', marginTop: '4px' }}>잘 하고 있어요. 이대로만 해도 충분해요.</p>}
+                  {task.success_ratio >= 0.7 && task.success_ratio < 0.9 && <p style={{ color: '#facc15', marginTop: '4px' }}>조금 느려졌어요. 다시 가볼까요?</p>}
+                  {task.success_ratio < 0.7 && <p style={{ color: '#ef4444', marginTop: '4px' }}>힘이 빠졌어요. 따라가려면 좀 더 힘을 내야 해요.</p>}
+                </div>
+              )}
+
+              {/* <p>성공률: {(task.success_ratio * 100).toFixed(1)}%</p> */}
+              <TaskExecutionPanel taskId={task.id} userId={user?.id} onComplete={fetchTasks} />
+            </div>
+          );
+        })}
+      </main>
     </AutoLogoutWrapper>
   );
 }
