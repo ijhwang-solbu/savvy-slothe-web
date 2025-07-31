@@ -4,6 +4,8 @@ import { useRouter, useParams } from 'next/navigation';
 import { useEffect, useState, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import AutoLogoutWrapper from '@/app/components/AutoLogoutWrapper';
+import Modal from '../../components/Modal/Modal';
+import Button from '@/app/components/common/Button/Button';
 
 export default function TaskHistoryPage() {
   const router = useRouter();
@@ -32,7 +34,6 @@ export default function TaskHistoryPage() {
   useEffect(() => {
     fetchHistory();
   }, [fetchHistory]);
-
 
   const toggleDate = (date) => {
     setSelectedDates((prev) => (prev.includes(date) ? prev.filter((d) => d !== date) : [...prev, date]));
@@ -72,55 +73,60 @@ export default function TaskHistoryPage() {
 
   return (
     <AutoLogoutWrapper>
-    <div style={{ padding: '2rem' }}>
-      <h2>{taskTitle} - 히스토리</h2>
-      <p>기록 수: {executions.length}건</p>
-      <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '1rem' }}>
-        <thead>
-          <tr>
-            <th style={thStyle}>선택</th>
-            <th style={thStyle}>날짜</th>
-          </tr>
-        </thead>
-        <tbody>
-          {executions.map((e) => (
-            <tr key={e.executed_at}>
-              <td style={tdStyle_check}>
-                <input type='checkbox' checked={selectedDates.includes(e.executed_at)} onChange={() => toggleDate(e.executed_at)} />
-              </td>
-              <td style={tdStyle}>{e.executed_at}</td>
+      <div style={{ padding: '2rem' }}>
+        <h2>
+          <strong>[{taskTitle}]</strong> 히스토리
+        </h2>
+        <p>기록 수: {executions.length}건</p>
+        <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '1rem', marginBottom: '1rem' }}>
+          <thead>
+            <tr>
+              <th style={thStyle}>선택</th>
+              <th style={thStyle}>날짜</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {executions.map((e) => (
+              <tr key={e.executed_at}>
+                <td style={tdStyle_check}>
+                  <input type='checkbox' checked={selectedDates.includes(e.executed_at)} onChange={() => toggleDate(e.executed_at)} />
+                </td>
+                <td style={tdStyle}>{e.executed_at}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
 
-      <button
-        disabled={selectedDates.length === 0}
-        onClick={() => setShowModal(true)}
-        style={{
-          marginRight: '1rem',
-          padding: '0.5rem 1rem',
-          border: '1px solid red',
-          backgroundColor: selectedDates.length === 0 ? '#eee' : '#fff',
-          color: selectedDates.length === 0 ? '#aaa' : 'red',
-          cursor: selectedDates.length === 0 ? 'not-allowed' : 'pointer',
-        }}>
-        삭제
-      </button>
+        <Button variant='danger' disabled={selectedDates.length === 0} onClick={() => setShowModal(true)}>
+          삭제
+        </Button>
+        <Button variant='secondary' onClick={() => router.push('/')}>
+          목록
+        </Button>
 
-      <button onClick={() => router.push('/')}>목록</button>
-
-      {/* ✅ 모달 */}
-      {showModal && (
-        <div style={{ padding: '1rem', border: '1px solid #aaa', marginTop: '1rem' }}>
+        {/* ✅ 모달 */}
+        <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
           <p>정말 삭제하시겠습니까?</p>
-          <button onClick={handleDelete} style={{ marginRight: '1rem' }}>
-            삭제
-          </button>
-          <button onClick={() => setShowModal(false)}>취소</button>
-        </div>
-      )}
-    </div>
+          <div style={{ marginTop: '1rem' }}>
+            <Button variant='danger' onClick={handleDelete}>
+              삭제
+            </Button>
+            <Button variant='secondary' onClick={() => setShowModal(false)}>
+              취소
+            </Button>
+          </div>
+        </Modal>
+
+        {/* {showModal && (
+          <div style={{ padding: '1rem', border: '1px solid #aaa', marginTop: '1rem' }}>
+            <p>정말 삭제하시겠습니까?</p>
+            <button onClick={handleDelete} style={{ marginRight: '1rem' }}>
+              삭제
+            </button>
+            <button onClick={() => setShowModal(false)}>취소</button>
+          </div>
+        )} */}
+      </div>
     </AutoLogoutWrapper>
   );
 }

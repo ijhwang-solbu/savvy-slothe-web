@@ -6,8 +6,8 @@ import TaskExecutionPanel from './components/TaskExecutionPanel';
 import Link from 'next/link';
 import AutoLogoutWrapper from './components/AutoLogoutWrapper';
 import styles from './text.module.css';
-import modal from './components/modal/modal';
-import Modal from './components/modal/modal';
+import Modal from '@/app/components/Modal/Modal';
+import Button from '@/app/components/common/Button/Button';
 
 export default function Home() {
   /* ==========================================
@@ -77,8 +77,25 @@ export default function Home() {
         start_date: getKstTodayDateString(),
       },
     ]);
+
+    if (error) {
+      alert('등록 중 오류가 발생했습니다.');
+      return;
+    }
+    setTitle('');
+    setIntervalDays('');
+    setTargetCount('');
     setShowModal(false);
     fetchTasks();
+  };
+
+  //팝업 닫을 때 초기화
+  const closeModal = () => {
+    setShowModal(false);
+    // ✅ 입력값 초기화
+    setTitle('');
+    setIntervalDays('');
+    setTargetCount('');
   };
 
   /* ================================
@@ -151,13 +168,22 @@ export default function Home() {
 ========================================== */
   return (
     <AutoLogoutWrapper>
-      <main style={{ padding: '1rem' }}>
-        <h1 style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          Savvy Sloth
+      <main style={{ padding: '1rem', maxWidth: '600px', minWidth: '300px', margin: '0 auto' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
+          <h1 style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '25px', fontWeight: '700', background: '#000000', color: '#FFFFFF' }}>
+            작심
+            <img
+              src='/logo.png' // public 폴더에 logo.png 넣기
+              alt='Savvy Sloth Logo'
+              style={{ width: '32px', height: '32px' }}
+            />
+            일
+          </h1>
+
           <button
             onClick={handleLogout}
             style={{
-              padding: '0.5rem 1rem',
+              padding: '0.2rem 0.5rem',
               border: '1px solid #333',
               borderRadius: '5px',
               backgroundColor: '#e5e7eb',
@@ -165,16 +191,17 @@ export default function Home() {
               cursor: 'pointer',
               transition: 'background-color 0.2s ease',
               color: '#000',
+              fontSize: '14px',
             }}
             onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#d1d5db')}
             onMouseOut={(e) => (e.currentTarget.style.backgroundColor = '#e5e7eb')}>
             로그아웃
           </button>
-        </h1>
+        </div>
 
         <button
           style={{
-            padding: '0.5rem 1rem',
+            padding: '0.4rem 0.8rem',
             border: '1px solid #333',
             borderRadius: '5px',
             background: '#f4e3ffff',
@@ -183,11 +210,11 @@ export default function Home() {
             color: '#000',
           }}
           onClick={() => setShowModal(true)}>
-          <strong>새 결심 등록하기</strong>
+          <strong>+ 새로운 결심</strong>
         </button>
 
         {/* 등록 모달 */}
-        <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+        <Modal isOpen={showModal} onClose={closeModal}>
           <h3 className={styles.sectionTitle}>새로운 결심</h3>
           <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '0.5rem', margin: '1rem 0rem' }}>
             <input style={{ ...inputStyle, width: '8rem' }} placeholder='20분 공원 뛰기' value={title} onChange={(e) => setTitle(e.target.value)} />
@@ -201,12 +228,12 @@ export default function Home() {
           </div>
 
           <div>
-            <button onClick={insertTask} style={{ ...btn, background: '#f4e3ffff' }}>
+            <Button variant='primary' onClick={insertTask}>
               등록
-            </button>
-            <button onClick={() => setShowModal(false)} style={btn}>
+            </Button>
+            <Button variant='secondary' onClick={closeModal}>
               취소
-            </button>
+            </Button>
           </div>
         </Modal>
 
@@ -233,6 +260,7 @@ export default function Home() {
                 border: '1px solid #ddd',
                 padding: '1rem',
                 marginBottom: '1rem',
+                Width: '100%px',
               }}>
               <h3 className={styles.sectionTitle}>{task.title}</h3>
               <p style={{ marginBottom: '5px' }}>
@@ -254,20 +282,20 @@ export default function Home() {
                     <strong>{task.start_date}</strong>에 시작해서
                   </p> */}
                   <p>
-                    <strong>총 {daysPassed}일</strong> 동안 <strong>{task.execution_count}번</strong> 진행했네요.
+                    <strong>{daysPassed}일</strong> 동안 <strong>{task.execution_count}번</strong> 진행했네요.
                   </p>
                 </div>
                 <Link
                   href={`/history/${task.id}`}
                   style={{
-                    padding: '6px 10px',
+                    padding: '4px 8px',
                     fontSize: '0.8rem',
-                    border: '1px solid #888',
+                    // border: '1px solid #888888',
                     borderRadius: '4px',
                     // marginLeft: '12px',
                     textDecoration: 'none',
-                    color: '#333',
-                    backgroundColor: '#f3f3f3',
+                    color: '#191946',
+                    backgroundColor: '#ddddddff',
                   }}>
                   히스토리
                 </Link>
@@ -291,6 +319,7 @@ export default function Home() {
                     style={{
                       position: 'relative',
                       width: '100%',
+                      // maxWidth: '400px', // ✅ 최대 길이 제한
                       height: '14px',
                       background: 'linear-gradient(to right, #eb5050ff, #22c55e 50%, #3b82f6)',
                       borderRadius: '7px',
@@ -324,16 +353,31 @@ export default function Home() {
                         transition: 'left 0.5s ease',
                       }}
                     />
+                    {/* 마커 아래 퍼센트 표시 */}
+                    <div
+                      style={{
+                        position: 'absolute',
+                        top: '14px', // 게이지 아래 위치
+                        left: `calc(${markerPos}% - 12px)`, // 마커와 동일한 left
+                        fontSize: '10px',
+                        color: '#333',
+                        background: 'rgba(255,255,255,0.8)',
+                        padding: '1px 3px',
+                        borderRadius: '4px',
+                        whiteSpace: 'nowrap',
+                      }}>
+                      {(task.success_ratio * 100).toFixed(0)}%
+                    </div>
                   </div>
 
                   {/* --------------- */}
 
                   {/* 상태 메시지 */}
-                  {task.success_ratio >= 1.3 && <p style={{ color: '#22c55e', marginTop: '4px' }}>매우 빠릅니다!!!! 날아가요!</p>}
-                  {task.success_ratio >= 1.0 && task.success_ratio < 1.3 && <p style={{ color: '#60a5fa', marginTop: '4px' }}>완벽 페이스 유지 중!! 이대로 쭉 가자요!</p>}
-                  {task.success_ratio >= 0.85 && task.success_ratio < 1.0 && <p style={{ color: '#60a5fa', marginTop: '4px' }}>잘 하고 있어요. 이대로만 해도 충분해요.</p>}
-                  {task.success_ratio >= 0.7 && task.success_ratio < 0.85 && <p style={{ color: '#facc15', marginTop: '4px' }}>조금 느려졌어요. 다시 가볼까요?</p>}
-                  {task.success_ratio < 0.7 && <p style={{ color: '#ef4444', marginTop: '4px' }}>힘이 빠졌어요. 따라가려면 좀 더 힘을 내야 해요.</p>}
+                  {task.success_ratio >= 1.3 && <p style={{ color: '#22c55e', marginTop: '15px' }}>매우 빠릅니다!!!! 날아가요!</p>}
+                  {task.success_ratio >= 1.0 && task.success_ratio < 1.3 && <p style={{ color: '#60a5fa', marginTop: '15px' }}>완벽 페이스 유지 중!! 이대로 쭉 가자요!</p>}
+                  {task.success_ratio >= 0.85 && task.success_ratio < 1.0 && <p style={{ color: '#60a5fa', marginTop: '15px' }}>잘 하고 있어요. 이대로만 해도 충분해요.</p>}
+                  {task.success_ratio >= 0.7 && task.success_ratio < 0.85 && <p style={{ color: '#facc15', marginTop: '15px' }}>조금 느려졌어요. 다시 가볼까요?</p>}
+                  {task.success_ratio < 0.7 && <p style={{ color: '#ef4444', marginTop: '15px' }}>힘이 빠졌어요. 따라가려면 좀 더 힘을 내야 해요.</p>}
                 </div>
               )}
 
