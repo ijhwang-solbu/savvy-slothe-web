@@ -4,7 +4,7 @@ import { useRouter, useParams } from 'next/navigation';
 import { useEffect, useState, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import AutoLogoutWrapper from '@/app/components/AutoLogoutWrapper';
-import Modal from '@/app/components/modal_temp/Modal';
+import Modal from '@/app/components/Modal/Modal';
 import Button from '@/app/components/common/Button/Button';
 
 export default function TaskHistoryPage() {
