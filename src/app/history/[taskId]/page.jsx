@@ -4,7 +4,7 @@ import { useRouter, useParams } from 'next/navigation';
 import { useEffect, useState, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import AutoLogoutWrapper from '@/app/components/AutoLogoutWrapper';
-import Modal from '../../components/Modal/Modal';
+import Modal from '@/app/components/Modal/Modal';
 import Button from '@/app/components/common/Button/Button';
 
 export default function TaskHistoryPage() {
@@ -117,15 +117,6 @@ export default function TaskHistoryPage() {
           </div>
         </Modal>
 
-        {/* {showModal && (
-          <div style={{ padding: '1rem', border: '1px solid #aaa', marginTop: '1rem' }}>
-            <p>정말 삭제하시겠습니까?</p>
-            <button onClick={handleDelete} style={{ marginRight: '1rem' }}>
-              삭제
-            </button>
-            <button onClick={() => setShowModal(false)}>취소</button>
-          </div>
-        )} */}
       </div>
     </AutoLogoutWrapper>
   );
