@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
-import Modal from '@/app/components/Modal/Modal';
+import Modal from '@/app/components/modal/Modal';
 import Button from '@/app/components/common/Button/Button';
 
 export default function TaskExecutionPanel({ taskId, userId, onComplete }) {
