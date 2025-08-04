@@ -28,6 +28,13 @@ export default function Home() {
   const [intervalDays, setIntervalDays] = useState('');
   const [targetCount, setTargetCount] = useState('');
 
+  //삭제용 상태 추가
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteTargetId, setDeleteTargetId] = useState(null);
+  // 삭제 모달 랜덤 문구 상태
+  const deleteMessages = ['이정도 마음이었니?', '벌써 떠나려는 거야?', '이별을 준비했구나?', '결심은 쉽게 사라지는구나...'];
+  const [deleteMessage, setDeleteMessage] = useState(deleteMessages[0]);
+
   // ✅ 로그인된 유저 가져오기
   useEffect(() => {
     const getUser = async () => {
@@ -139,6 +146,32 @@ export default function Home() {
     }
   }, [user]);
 
+  //삭제 버튼 클릭 -> 모달 표시
+  const openDeleteModal = (taskId) => {
+    const randomMsg = deleteMessages[Math.floor(Math.random() * deleteMessages.length)];
+    setDeleteMessage(randomMsg);
+    setDeleteTargetId(taskId);
+    setShowDeleteModal(true);
+  };
+
+  const closeDeleteModal = () => {
+    setShowDeleteModal(false);
+    setDeleteTargetId(null);
+  };
+
+  //삭제 로직
+  const deleteTask = async () => {
+    if (!deleteTargetId) return;
+    const { error } = await supabase.from('tasks').delete().eq('id', deleteTargetId);
+    if (error) {
+      alert('삭제 실패! 다시 시도해주세요.');
+      return;
+    }
+    alert('결심이 삭제되었습니다.');
+    closeDeleteModal();
+    fetchTasks();
+  };
+
   // 유저 아이디 확인
   // console.log('유저 ID (프론트):', user.id);
   /* ================================
@@ -170,6 +203,19 @@ export default function Home() {
   return (
     <AutoLogoutWrapper>
       <PageLayout showLogo={true} showLogout={true} pageTitle='' onLogout={() => handleLogout()}>
+        <Modal isOpen={showDeleteModal} onClose={closeDeleteModal}>
+          <h3 style={{ marginBottom: '0.5rem' }}>{deleteMessage}</h3>
+          <p style={{ marginBottom: '1rem' }}>그런거야..?</p>
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <Button variant='danger' onClick={deleteTask}>
+              네, 지울게요
+            </Button>
+            <Button variant='secondary' onClick={closeDeleteModal}>
+              아니요, 남길래요
+            </Button>
+          </div>
+        </Modal>
+
         <main style={{ padding: '1rem', maxWidth: '600px', minWidth: '300px', margin: '0 auto' }}>
           <button
             style={{
@@ -232,8 +278,23 @@ export default function Home() {
                   border: '1px solid #ddd',
                   padding: '1rem',
                   marginBottom: '1rem',
-                  Width: '100%px',
+                  // Width: '100%px',
+                  position: 'relative',
                 }}>
+                {/* 휴지통 아이콘 */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: '8px',
+                    right: '8px',
+                    cursor: 'pointer',
+                    fontSize: '18px', // 크기 조정
+                    lineHeight: '1', // 세로 맞춤
+                  }}
+                  onClick={() => openDeleteModal(task.id)}>
+                  🗑️
+                </div>
+
                 <h3 className={styles.sectionTitle}>{task.title}</h3>
                 <p style={{ marginBottom: '5px' }}>
                   <strong>
@@ -272,7 +333,6 @@ export default function Home() {
                   </Link>
                 </div>
                 {/* <p>마지막 실행일: {task.last_check_date || '—'}</p> */}
-
                 {/* 성공률 */}
                 {task.execution_count === 0 ? (
                   // 처음 시작일 때 메시지
@@ -351,7 +411,6 @@ export default function Home() {
                     {task.success_ratio < 0.7 && <p style={{ color: '#ef4444', marginTop: '15px' }}>힘이 빠졌어요. 따라가려면 좀 더 힘을 내야 해요.</p>}
                   </div>
                 )}
-
                 {/* <p>성공률: {(task.success_ratio * 100).toFixed(1)}%</p> */}
                 <TaskExecutionPanel taskId={task.id} userId={user?.id} onComplete={fetchTasks} />
               </div>
