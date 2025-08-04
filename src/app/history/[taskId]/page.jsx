@@ -54,7 +54,8 @@ export default function TaskHistoryPage() {
   const thStyle = {
     border: '1px solid #ccc',
     padding: '8px',
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#e9e9e9ff',
+    color: '#303030',
     fontWeight: 'bold',
     textAlign: 'center',
   };
