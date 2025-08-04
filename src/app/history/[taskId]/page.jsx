@@ -6,6 +6,7 @@ import { supabase } from '@/lib/supabase';
 import AutoLogoutWrapper from '@/app/components/AutoLogoutWrapper';
 import Modal from '@/app/components/Modal/Modal';
 import Button from '@/app/components/common/Button/Button';
+import PageLayout from '@/app/components/common/PageLayout/PageLayout';
 
 export default function TaskHistoryPage() {
   const router = useRouter();
@@ -73,51 +74,52 @@ export default function TaskHistoryPage() {
 
   return (
     <AutoLogoutWrapper>
-      <div style={{ padding: '2rem' }}>
-        <h2>
-          <strong>[{taskTitle}]</strong> 히스토리
-        </h2>
-        <p>기록 수: {executions.length}건</p>
-        <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '1rem', marginBottom: '1rem' }}>
-          <thead>
-            <tr>
-              <th style={thStyle}>선택</th>
-              <th style={thStyle}>날짜</th>
-            </tr>
-          </thead>
-          <tbody>
-            {executions.map((e) => (
-              <tr key={e.executed_at}>
-                <td style={tdStyle_check}>
-                  <input type='checkbox' checked={selectedDates.includes(e.executed_at)} onChange={() => toggleDate(e.executed_at)} />
-                </td>
-                <td style={tdStyle}>{e.executed_at}</td>
+      <PageLayout showLogo={true} showLogout={false} pageTitle='히스토리 상세'>
+        <div style={{ padding: '0rem 0.5rem' }}>
+          <h2 style={{ fontSize: '1.2rem' }}>
+            <strong>[제목 : {taskTitle}]</strong>
+          </h2>
+          <p>기록 수: {executions.length}건</p>
+          <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '1rem', marginBottom: '1rem' }}>
+            <thead>
+              <tr>
+                <th style={thStyle}>선택</th>
+                <th style={thStyle}>날짜</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {executions.map((e) => (
+                <tr key={e.executed_at}>
+                  <td style={tdStyle_check}>
+                    <input type='checkbox' checked={selectedDates.includes(e.executed_at)} onChange={() => toggleDate(e.executed_at)} />
+                  </td>
+                  <td style={tdStyle}>{e.executed_at}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
 
-        <Button variant='danger' disabled={selectedDates.length === 0} onClick={() => setShowModal(true)}>
-          삭제
-        </Button>
-        <Button variant='secondary' onClick={() => router.push('/')}>
-          목록
-        </Button>
+          <Button variant='danger' disabled={selectedDates.length === 0} onClick={() => setShowModal(true)}>
+            삭제
+          </Button>
+          <Button variant='secondary' onClick={() => router.push('/')}>
+            목록
+          </Button>
 
-        {/* ✅ 모달 */}
-        <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
-          <p>정말 삭제하시겠습니까?</p>
-          <div style={{ marginTop: '1rem' }}>
-            <Button variant='danger' onClick={handleDelete}>
-              삭제
-            </Button>
-            <Button variant='secondary' onClick={() => setShowModal(false)}>
-              취소
-            </Button>
-          </div>
-        </Modal>
-
-      </div>
+          {/* ✅ 모달 */}
+          <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+            <p>정말 삭제하시겠습니까?</p>
+            <div style={{ marginTop: '1rem' }}>
+              <Button variant='danger' onClick={handleDelete}>
+                삭제
+              </Button>
+              <Button variant='secondary' onClick={() => setShowModal(false)}>
+                취소
+              </Button>
+            </div>
+          </Modal>
+        </div>
+      </PageLayout>
     </AutoLogoutWrapper>
   );
 }

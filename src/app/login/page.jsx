@@ -3,7 +3,8 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { useState, useEffect } from 'react';
 import LoginKakaoButton from '../components/LoginKakaoButton';
-import styles from './AuthButtons.module.css';
+import PageLayout from '@/app/components/common/PageLayout/PageLayout';
+import Button from '../components/common/Button/Button';
 
 export default function Login() {
   /* ==========================================
@@ -78,33 +79,33 @@ export default function Login() {
 ✅ 렌더링
 ========================================== */
   return (
-    <main style={{ padding: '2rem' }}>
-      {/* <h1>안녕하세요. Savvy-Sloth입니다.</h1> */}
-      <div style={{ marginBottom: '10px', marginTop: '10px' }}>
-        <p>
-          <strong>작심삼일</strong>
-        </p>
-        <p style={{ marginBottom: '10px' }}>적당히 나태한 결심 관리 프로젝트</p>
-        <p>&quot; 가끔은 쉬면 어때 &quot;</p>
-        <p>&quot; 바짝 달려서 따라잡으면 되잖아. &quot;</p>
-        <p>&quot; 나만의 페이스로 달리면 돼. &quot;</p>
-      </div>
+    <PageLayout showLogo={true} showLogout={false} pageTitle=''>
+      <main style={{ padding: '1rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        {/* <h1>안녕하세요. Savvy-Sloth입니다.</h1> */}
+        <div style={{ marginBottom: '10px', marginTop: '10px' }}>
+          <p style={{ marginBottom: '10px', fontSize: '1.1rem' }}>
+            <strong>적당히 나태한 결심 관리 프로젝트</strong>
+          </p>
+          <p>&quot; 가끔은 쉬면 어때 &quot;</p>
+          <p>&quot; 바짝 달려서 따라잡으면 되잖아. &quot;</p>
+          <p>&quot; 나만의 페이스로 달리면 돼. &quot;</p>
+        </div>
 
-      {/* <h3>로그인해 주세요.</h3>
+        <h3>로그인해 주세요.</h3>
 
-      <div>
-        <input type='email' placeholder='이메일' style={inputStyle} value={email} onChange={(e) => setEmail(e.target.value)} />
-        <input type='password' placeholder='비밀번호' style={inputStyle} value={password} onChange={(e) => setPassword(e.target.value)} />
-      </div>
-      <div>
-        <button onClick={signUp} className={`${styles.btn} ${styles.signin}`}>
-          회원가입
-        </button>
-        <button onClick={signIn} className={`${styles.btn} ${styles.lgn}`}>
-          로그인
-        </button>
-      </div> */}
-      <LoginKakaoButton />
-    </main>
+        <dev>
+          <input type='email' placeholder='이메일' style={inputStyle} value={email} onChange={(e) => setEmail(e.target.value)} />
+          <input type='password' placeholder='비밀번호' style={inputStyle} value={password} onChange={(e) => setPassword(e.target.value)} />
+        </dev>
+
+        <div>
+          {/* <Button onClick={signUp} variant='secondary'>회원가입</Button> */}
+          <Button onClick={signIn} variant='primary'>
+            로그인
+          </Button>
+        </div>
+        <LoginKakaoButton />
+      </main>
+    </PageLayout>
   );
 }
