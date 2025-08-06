@@ -99,7 +99,7 @@ export default function Login() {
         </dev>
 
         <div>
-          {/* <Button onClick={signUp} variant='secondary'>회원가입</Button> */}
+          {/* <Button onClick={signUp} variant='secondary'>회원가입</Button> 
           <Button onClick={signIn} variant='primary'>
             로그인
           </Button>
