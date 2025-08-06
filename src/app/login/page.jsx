@@ -91,7 +91,7 @@ export default function Login() {
           <p>&quot; 나만의 페이스로 달리면 돼. &quot;</p>
         </div>
 
-        <h3>로그인해 주세요.</h3>
+        {/* <h3>로그인해 주세요.</h3>
 
         <dev>
           <input type='email' placeholder='이메일' style={inputStyle} value={email} onChange={(e) => setEmail(e.target.value)} />
@@ -103,7 +103,7 @@ export default function Login() {
           <Button onClick={signIn} variant='primary'>
             로그인
           </Button>
-        </div>
+        </div> */}
         <LoginKakaoButton />
       </main>
     </PageLayout>
