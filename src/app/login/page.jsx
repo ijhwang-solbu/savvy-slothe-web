@@ -14,6 +14,21 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  //로그인된 사용자 홈으로 보내기
+  useEffect(() => {
+    const checkAlreadyLoggedIn = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (user) {
+        // 이미 로그인된 사용자가 로그인 페이지에 들어온 경우 → 홈으로 보내기
+        router.replace('/');
+      }
+    };
+
+    checkAlreadyLoggedIn();
+  }, [router]);
+
   /* ==========================================
 회원 가입 / 로그인 함수
 ========================================== */
@@ -50,7 +65,7 @@ export default function Login() {
     }
 
     if (data?.session) {
-      router.push('/');
+      router.replace('/');
     }
   };
 

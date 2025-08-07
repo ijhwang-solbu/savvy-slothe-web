@@ -47,7 +47,7 @@ export default function Home() {
         data: { user },
       } = await supabase.auth.getUser();
       if (!user) {
-        router.push('/login');
+        router.replace('/login');
       } else {
         setUser(user);
       }
