@@ -22,7 +22,7 @@ export default function InstallPrompt({ onInstall, onClose }) {
           onClick={onInstall}
           style={{
             background: 'white',
-            color: '#4CAF50',
+            color: '#3b82f6',
             border: 'none',
             padding: '6px 12px',
             borderRadius: '4px',

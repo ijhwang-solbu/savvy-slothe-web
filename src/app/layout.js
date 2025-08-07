@@ -22,7 +22,7 @@ export default function RootLayout({ children }) {
     <html lang='en'>
       <head>
         <link rel='manifest' href='/manifest.json' />
-        <meta name='theme-color' content='#4CAF50' />
+        <meta name='theme-color' content='#3b82f6' />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>{children}</body>
     </html>
