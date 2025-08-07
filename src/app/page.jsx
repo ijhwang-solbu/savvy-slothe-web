@@ -2,15 +2,20 @@
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { useState, useEffect } from 'react';
-import TaskExecutionPanel from './components/TaskExecutionPanel';
+import TaskExecutionPanel from '../components/TaskExecutionPanel';
 import Link from 'next/link';
-import AutoLogoutWrapper from './components/AutoLogoutWrapper';
+import AutoLogoutWrapper from '../components/AutoLogoutWrapper';
 import styles from './text.module.css';
-import Modal from '@/app/components/Modal/Modal';
-import Button from '@/app/components/common/Button/Button';
-import PageLayout from '@/app/components/common/PageLayout/PageLayout';
+import Modal from '@/components/Modal/Modal';
+import Button from '@/components/Button/Button';
+import PageLayout from '@/components/PageLayout/PageLayout';
+import usePwaInstallPrompt from '@/hooks/usePwaInstallPrompt';
+import InstallPrompt from '@/components/InstallPrompt';
 
 export default function Home() {
+  //PWA 설치
+  const { isVisible, installApp, closePrompt } = usePwaInstallPrompt();
+
   /* ==========================================
  상태 관리 변수
 ========================================== */
@@ -215,7 +220,7 @@ export default function Home() {
             </Button>
           </div>
         </Modal>
-
+        {isVisible && <InstallPrompt onInstall={installApp} onClose={closePrompt} />}
         <main style={{ padding: '1rem', maxWidth: '600px', minWidth: '300px', margin: '0 auto' }}>
           <button
             style={{

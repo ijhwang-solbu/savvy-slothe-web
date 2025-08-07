@@ -2,9 +2,9 @@
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { useState, useEffect } from 'react';
-import LoginKakaoButton from '../components/LoginKakaoButton';
-import PageLayout from '@/app/components/common/PageLayout/PageLayout';
-import Button from '../components/common/Button/Button';
+import LoginKakaoButton from '../../components/LoginKakaoButton';
+import PageLayout from '@/components/PageLayout/PageLayout';
+import Button from '../../components/Button/Button';
 
 export default function Login() {
   /* ==========================================
@@ -99,7 +99,9 @@ export default function Login() {
         </dev>
 
         <div>
-          {/* <Button onClick={signUp} variant='secondary'>회원가입</Button> 
+          <Button onClick={signUp} variant='secondary'>
+            회원가입
+          </Button>
           <Button onClick={signIn} variant='primary'>
             로그인
           </Button>

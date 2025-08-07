@@ -3,10 +3,10 @@
 import { useRouter, useParams } from 'next/navigation';
 import { useEffect, useState, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
-import AutoLogoutWrapper from '@/app/components/AutoLogoutWrapper';
-import Modal from '@/app/components/Modal/Modal';
-import Button from '@/app/components/common/Button/Button';
-import PageLayout from '@/app/components/common/PageLayout/PageLayout';
+import AutoLogoutWrapper from '@/components/AutoLogoutWrapper';
+import Modal from '@/components/Modal/Modal';
+import Button from '@/components/Button/Button';
+import PageLayout from '@/components/PageLayout/PageLayout';
 
 export default function TaskHistoryPage() {
   const router = useRouter();

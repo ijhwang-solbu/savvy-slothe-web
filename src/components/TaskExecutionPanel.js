@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
-import Modal from '@/app/components/Modal/Modal';
-import Button from '@/app/components/common/Button/Button';
+import Modal from '@/components/Modal/Modal';
+import Button from '@/components/Button/Button';
 
 export default function TaskExecutionPanel({ taskId, userId, onComplete }) {
   const getKstDate = () => new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().slice(0, 10); // yyyy-mm-dd
