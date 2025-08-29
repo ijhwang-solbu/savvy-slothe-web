@@ -1,29 +1,55 @@
 .container {
   position: relative;
+  display: flex;
+  align-items: center;
+  /* height: 100%; */
 }
 
+/* 트리거: 프로필 아바타 버튼 */
 .trigger {
   width: 40px;
   height: 40px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
+  /* line-height: 0; */
   background: transparent;
   border: 1px solid color-mix(in oklab, CanvasText 20%, transparent);
-  border-radius: 10px;
+  border-radius: 999px;
 
   cursor: pointer;
   transition: background 0.15s ease;
+  /* box-sizing: border-box; */
+  /* 테두리 포함 높이 보정 */
 }
-
 .trigger:hover {
   background: color-mix(in oklab, Canvas 90%, CanvasText 10%);
 }
-
 .trigger:focus-visible {
   outline: 2px solid Highlight;
   outline-offset: 2px;
+}
+
+/* 아바타 이미지/대체 이니셜 */
+.avatarImg {
+  width: 100%;
+  height: 100%;
+  border-radius: 999px;
+  object-fit: cover;
+}
+.avatarFallback {
+  /* display: block; */
+  width: 100%;
+  height: 100%;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: color-mix(in oklab, CanvasText 12%, Canvas);
+  color: CanvasText;
+}
+.initials {
+  font-weight: 700;
+  font-size: 0.9rem;
 }
 
 .icon {
@@ -33,17 +59,57 @@
 .menu {
   position: absolute;
   right: 0;
-  margin-top: 8px;
-  min-width: 176px;
+  top: calc(100% + 8px);
+  margin-top: 0px;
+  min-width: 200px;
 
   background: Canvas;
   color: CanvasText;
   border: 1px solid color-mix(in oklab, CanvasText 20%, transparent);
   border-radius: 12px;
-  box-shadow: 0 8px 24px color-mix(in oklab, CanvasText 15%, transparent);
-  padding: 4px;
+  box-shadow: 0 8px 28px color-mix(in oklab, CanvasText 18%, transparent);
+  padding: 6px;
 
   z-index: 20;
+}
+
+/* 상단 사용자 정보 헤더 (선택) */
+.header {
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  gap: 10px;
+  align-items: center;
+  padding: 8px 10px 10px 10px;
+  border-bottom: 1px solid color-mix(in oklab, CanvasText 12%, transparent);
+  margin-bottom: 4px;
+}
+.headerAvatar,
+.headerAvatarFallback {
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  object-fit: cover;
+}
+.headerAvatarFallback {
+  display: grid;
+  place-items: center;
+  background: color-mix(in oklab, CanvasText 12%, Canvas);
+  color: CanvasText;
+}
+.name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 섹션 구분선 */
+.separator {
+  height: 1px;
+  margin: 6px 4px;
+  background: color-mix(in oklab, CanvasText 12%, transparent);
+  border-radius: 1px;
 }
 
 .menuItem {
@@ -72,7 +138,13 @@
   }
   .menu {
     border-color: color-mix(in oklab, CanvasText 30%, transparent);
-    box-shadow: 0 8px 24px color-mix(in oklab, Canvas 70%, black);
+    /* box-shadow: 0 12px 28px color-mix(in oklab, Canvas 70%, black); */
+  }
+  .header {
+    border-bottom-color: color-mix(in oklab, CanvasText 16%, transparent);
+  }
+  .separator {
+    background: color-mix(in oklab, CanvasText 16%, transparent);
   }
 }
 
@@ -82,5 +154,16 @@
 }
 :global(html[data-theme='dark']) .menu {
   border-color: color-mix(in oklab, CanvasText 30%, transparent);
-  box-shadow: 0 8px 24px color-mix(in oklab, Canvas 70%, black);
+  box-shadow: 0 12px 28px color-mix(in oklab, Canvas 70%, black);
+}
+:global(html[data-theme='dark']) .header {
+  border-bottom-color: color-mix(in oklab, CanvasText 16%, transparent);
+}
+:global(html[data-theme='dark']) .separator {
+  background: color-mix(in oklab, CanvasText 16%, transparent);
+}
+
+/* SVG 아이콘이 필요한 경우 대비 (현재는 미사용) */
+.icon {
+  /* stroke는 currentColor를 사용 → 시스템 텍스트 컬러 자동 반영 */
 }

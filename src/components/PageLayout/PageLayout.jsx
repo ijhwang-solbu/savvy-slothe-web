@@ -1,6 +1,12 @@
 import Image from 'next/image';
 import styles from './PageLayout.module.css';
-import UserMenu from '@/components/UserMenu/UserMenu';
+// import UserMenu from '@/components/UserMenu/UserMenu';
+import dynamic from 'next/dynamic';
+
+// ✅ 서버렌더 비활성화 → 확장프로그램이 DOM 건드려도 서버출력과 비교가 안 됨
+const UserMenu = dynamic(() => import('@/components/UserMenu/UserMenu'), {
+  ssr: false,
+});
 
 export default function PageLayout({ children, showLogo = true, showLogout = true, pageTitle = '', showFooter = true, onLogout }) {
   return (
