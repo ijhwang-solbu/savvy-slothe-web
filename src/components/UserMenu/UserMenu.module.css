@@ -1,0 +1,86 @@
+.container {
+  position: relative;
+}
+
+.trigger {
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  background: transparent;
+  border: 1px solid color-mix(in oklab, CanvasText 20%, transparent);
+  border-radius: 10px;
+
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.trigger:hover {
+  background: color-mix(in oklab, Canvas 90%, CanvasText 10%);
+}
+
+.trigger:focus-visible {
+  outline: 2px solid Highlight;
+  outline-offset: 2px;
+}
+
+.icon {
+  /* stroke는 currentColor를 사용 → 시스템 텍스트 컬러 자동 반영 */
+}
+
+.menu {
+  position: absolute;
+  right: 0;
+  margin-top: 8px;
+  min-width: 176px;
+
+  background: Canvas;
+  color: CanvasText;
+  border: 1px solid color-mix(in oklab, CanvasText 20%, transparent);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px color-mix(in oklab, CanvasText 15%, transparent);
+  padding: 4px;
+
+  z-index: 20;
+}
+
+.menuItem {
+  width: 100%;
+  text-align: left;
+  padding: 8px 12px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+
+.menuItem:hover,
+.menuItem:focus-visible {
+  background: color-mix(in oklab, Canvas 85%, CanvasText 15%);
+  outline: none;
+}
+
+/* 시스템 다크모드 대응: 기본 색상 키워드(CSS Color 4)를 사용했기 때문에
+   별도 색 지정이 없어도 잘 어울립니다. 추가 커스터마이즈가 필요하면 아래 확장 */
+@media (prefers-color-scheme: dark) {
+  .trigger {
+    border-color: color-mix(in oklab, CanvasText 30%, transparent);
+  }
+  .menu {
+    border-color: color-mix(in oklab, CanvasText 30%, transparent);
+    box-shadow: 0 8px 24px color-mix(in oklab, Canvas 70%, black);
+  }
+}
+
+/* 프로젝트에서 html[data-theme='dark']를 쓰는 경우를 대비한 훅 */
+:global(html[data-theme='dark']) .trigger {
+  border-color: color-mix(in oklab, CanvasText 30%, transparent);
+}
+:global(html[data-theme='dark']) .menu {
+  border-color: color-mix(in oklab, CanvasText 30%, transparent);
+  box-shadow: 0 8px 24px color-mix(in oklab, Canvas 70%, black);
+}

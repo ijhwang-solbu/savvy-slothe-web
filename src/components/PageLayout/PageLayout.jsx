@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import styles from './PageLayout.module.css';
+import UserMenu from '@/components/UserMenu/UserMenu';
 
 export default function PageLayout({ children, showLogo = true, showLogout = true, pageTitle = '', showFooter = true, onLogout }) {
   return (
@@ -9,6 +10,7 @@ export default function PageLayout({ children, showLogo = true, showLogout = tru
         maxWidth: '800px',
         minWidth: '300px',
         margin: '0 auto',
+        // backgroundColor: '#000000',
       }}>
       {/* Header */}
       {(showLogo || showLogout) && (
@@ -21,11 +23,14 @@ export default function PageLayout({ children, showLogo = true, showLogout = tru
           )}
           {/* Page Title */}
 
-          {showLogout && (
-            <button className={styles.logoutBtn} onClick={onLogout}>
-              로그아웃
-            </button>
-          )}
+          {
+            showLogout && <UserMenu />
+            //  (
+            //   <button className={styles.logoutBtn} onClick={onLogout}>
+            //     로그아웃
+            //   </button>
+            // )
+          }
         </header>
       )}
       {pageTitle && <h1 style={{ fontSize: '1.3rem', fontWeight: '700', margin: '1rem 0.5rem' }}>{pageTitle}</h1>}
