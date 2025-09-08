@@ -6,6 +6,11 @@
   align-items: center;
   padding: 0 1rem;
   /* border-radius: 6px 6px 0 0; */
+
+  /* ✅ 스티키 적용 */
+  position: sticky;
+  top: 0;
+  z-index: 999; /* 다른 요소보다 위에 있도록 */
 }
 
 .logo {

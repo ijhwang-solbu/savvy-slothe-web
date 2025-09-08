@@ -1,4 +1,6 @@
 'use client';
+//디렉토리 : app/page.jsx
+
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { useState, useEffect } from 'react';
@@ -11,6 +13,7 @@ import Button from '@/components/Button/Button';
 import PageLayout from '@/components/PageLayout/PageLayout';
 import usePwaInstallPrompt from '@/hooks/usePwaInstallPrompt';
 import InstallPrompt from '@/components/InstallPrompt';
+import MainCalendarPanel from '@/components/Main/MainCalendarPanel';
 
 export default function Home() {
   //PWA 설치
@@ -202,6 +205,29 @@ export default function Home() {
     marginRight: '5px',
     color: '#000',
   };
+
+  //달력 컴포넌트 정의
+  const handleSelectDay = (dateKey) => {
+    // TODO: DayManageDialog 열기 (다음 단계에서 구현)
+    console.log('select day', dateKey);
+  };
+
+  // 10.달력 바로 동기화
+  const [statsMap, setStatsMap] = useState({});
+  ////10. ✅ 추가: 실행 완료된 날짜를 즉시 반영하는 로컬 업데이트 함수
+  const handleComplete = (dateKey) => {
+    setStatsMap((prev) => {
+      const current = prev[dateKey] || 0;
+      return { ...prev, [dateKey]: current + 1 };
+    });
+  };
+
+  ////10. ✅ TaskExecutionPanel에서 완료 후 호출되는 콜백
+  const handleCalendarUpdate = (dateKey) => {
+    handleComplete(dateKey); // 달력 즉시 반영
+    fetchTasks?.(); // task 리스트도 새로고침
+  };
+
   /* ==========================================
 ✅ 렌더링
 ========================================== */
@@ -235,7 +261,6 @@ export default function Home() {
             onClick={() => setShowModal(true)}>
             <strong>+ 새로운 결심</strong>
           </button>
-
           {/* 등록 모달 */}
           <Modal isOpen={showModal} onClose={closeModal}>
             <h3 className={styles.sectionTitle}>새로운 결심</h3>
@@ -259,11 +284,11 @@ export default function Home() {
               </Button>
             </div>
           </Modal>
-
           <hr />
+          {/* 1) 상단 달력 섹션 */}
+          <MainCalendarPanel statsMap={statsMap} setStatsMap={setStatsMap} onSelectDay={handleSelectDay} />
 
           {tasks.length === 0 && <p>등록된 결심이 없습니다.</p>}
-
           {tasks.map((task) => {
             const today = new Date(); // 브라우저가 한국 시간대라면 이미 KST임
             const startDate = new Date(task.start_date);
@@ -417,7 +442,7 @@ export default function Home() {
                   </div>
                 )}
                 {/* <p>성공률: {(task.success_ratio * 100).toFixed(1)}%</p> */}
-                <TaskExecutionPanel taskId={task.id} userId={user?.id} onComplete={fetchTasks} />
+                <TaskExecutionPanel taskId={task.id} userId={user?.id} onComplete={handleCalendarUpdate} />
               </div>
             );
           })}

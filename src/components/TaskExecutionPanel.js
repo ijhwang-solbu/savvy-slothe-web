@@ -1,3 +1,5 @@
+//TaskExecutionPanel.js
+
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import Modal from '@/components/Modal/Modal';
@@ -35,7 +37,7 @@ export default function TaskExecutionPanel({ taskId, userId, onComplete }) {
     if (!error) {
       setIsExecuted(true);
       alert('완료 처리되었습니다!');
-      if (onComplete) onComplete();
+      if (onComplete) onComplete(selectedDate);
     } else {
       alert('실행 중 오류 발생!');
       console.error(error);
