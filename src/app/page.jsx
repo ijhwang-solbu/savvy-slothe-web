@@ -118,7 +118,7 @@ export default function Home() {
     ✅ 결심 리스트 가져오기
   ================================= */
   const fetchTasks = async () => {
-    const { data, error } = await supabase.from('v_user_tasks').select('*').order('created_at', { ascending: false });
+    const { data, error } = await supabase.from('tasks').select('*').order('created_at', { ascending: false });
 
     if (error) {
       console.error('태스크 조회 오류:', error);
@@ -126,25 +126,10 @@ export default function Home() {
     }
 
     if (data) {
-      const today = new Date();
+      // ✅ DB에서 이미 days_passed, expected_count, success_ratio, current_count 컬럼을 관리
+      // 클라이언트에서 추가 계산할 필요 없음
 
-      const updatedTasks = data.map((task) => {
-        // 경과일 계산
-        const daysPassed = Math.floor((today.setHours(0, 0, 0, 0) - new Date(task.start_date).setHours(0, 0, 0, 0)) / (1000 * 60 * 60 * 24)) + 1;
-
-        // 예상 실행 횟수
-        const expectedCount = (daysPassed / task.interval_days) * task.target_count;
-
-        // 성공률 계산
-        const successRatio = expectedCount > 0 ? task.execution_count / expectedCount : 0;
-
-        return {
-          ...task,
-          success_ratio: successRatio,
-        };
-      });
-
-      setTasks(updatedTasks);
+      setTasks(data);
     }
   };
 
@@ -344,7 +329,7 @@ export default function Home() {
                     <strong>{task.start_date}</strong>에 시작해서
                   </p> */}
                     <p>
-                      <strong>{daysPassed}일</strong> 동안 <strong>{task.execution_count}번</strong> 진행했네요.
+                      <strong>{daysPassed}일</strong> 동안 <strong>{task.current_count}번</strong> 진행했네요.
                     </p>
                   </div>
                   <Link
@@ -364,7 +349,7 @@ export default function Home() {
                 </div>
                 {/* <p>마지막 실행일: {task.last_check_date || '—'}</p> */}
                 {/* 성공률 */}
-                {task.execution_count === 0 ? (
+                {task.current_count === 0 ? (
                   // 처음 시작일 때 메시지
                   <p style={{ marginTop: '0.5rem', fontWeight: '500', color: '#6B7280' }}>이제 시작해 볼까요?</p>
                 ) : (
@@ -420,7 +405,7 @@ export default function Home() {
                           position: 'absolute',
                           top: '14px', // 게이지 아래 위치
                           left: `calc(${markerPos}% - 12px)`, // 마커와 동일한 left
-                          fontSize: '10px',
+                          fontSize: '12px',
                           color: '#333',
                           background: 'rgba(255,255,255,0.8)',
                           padding: '1px 3px',
@@ -435,9 +420,9 @@ export default function Home() {
 
                     {/* 상태 메시지 */}
                     {task.success_ratio >= 1.3 && <p style={{ color: '#22c55e', marginTop: '15px' }}>매우 빠릅니다!!!! 날아가요!</p>}
-                    {task.success_ratio >= 1.0 && task.success_ratio < 1.3 && <p style={{ color: '#60a5fa', marginTop: '15px' }}>완벽 페이스 유지 중!! 이대로 쭉 가자요!</p>}
-                    {task.success_ratio >= 0.85 && task.success_ratio < 1.0 && <p style={{ color: '#60a5fa', marginTop: '15px' }}>잘 하고 있어요. 이대로만 해도 충분해요.</p>}
-                    {task.success_ratio >= 0.7 && task.success_ratio < 0.85 && <p style={{ color: '#facc15', marginTop: '15px' }}>조금 느려졌어요. 다시 가볼까요?</p>}
+                    {task.success_ratio >= 0.98 && task.success_ratio < 1.3 && <p style={{ color: '#60a5fa', marginTop: '15px' }}>완벽 페이스 유지 중!! 이대로 쭉 가자요!</p>}
+                    {task.success_ratio >= 0.85 && task.success_ratio < 0.98 && <p style={{ color: '#60a5fa', marginTop: '15px' }}>잘 하고 있어요. 이대로만 해도 충분해요.</p>}
+                    {task.success_ratio >= 0.7 && task.success_ratio < 0.5 && <p style={{ color: '#facc15', marginTop: '15px' }}>조금 느려졌어요. 다시 가볼까요?</p>}
                     {task.success_ratio < 0.7 && <p style={{ color: '#ef4444', marginTop: '15px' }}>힘이 빠졌어요. 따라가려면 좀 더 힘을 내야 해요.</p>}
                   </div>
                 )}
