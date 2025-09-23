@@ -14,6 +14,7 @@ import PageLayout from '@/components/PageLayout/PageLayout';
 import usePwaInstallPrompt from '@/hooks/usePwaInstallPrompt';
 import InstallPrompt from '@/components/InstallPrompt';
 import MainCalendarPanel from '@/components/Main/MainCalendarPanel';
+import VacationBadge from '@/components/Task/VacationBadge';
 
 export default function Home() {
   //PWA 설치
@@ -118,19 +119,50 @@ export default function Home() {
     ✅ 결심 리스트 가져오기
   ================================= */
   const fetchTasks = async () => {
-    const { data, error } = await supabase.from('tasks').select('*').order('created_at', { ascending: false });
+    if (!user?.id) return;
+
+    const { data, error } = await supabase
+      .from('tasks')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false });
 
     if (error) {
       console.error('태스크 조회 오류:', error);
       return;
     }
 
-    if (data) {
-      // ✅ DB에서 이미 days_passed, expected_count, success_ratio, current_count 컬럼을 관리
-      // 클라이언트에서 추가 계산할 필요 없음
-
-      setTasks(data);
+    if (!data) {
+      setTasks([]);
+      return;
     }
+
+    const { data: vacationData, error: vacationError } = await supabase
+      .from('task_vacations')
+      .select('task_id, start_date, end_date')
+      .eq('user_id', user.id);
+
+    if (vacationError) {
+      console.error('방학 정보 조회 오류:', vacationError);
+    }
+
+    const today = getKstTodayDateString();
+    const activeVacations = new Map();
+
+    (vacationData || []).forEach((vacation) => {
+      if (vacation.start_date <= today && vacation.end_date >= today) {
+        activeVacations.set(vacation.task_id, vacation);
+      }
+    });
+
+    const tasksWithVacation = data.map((task) => ({
+      ...task,
+      activeVacation: activeVacations.get(task.id) || null,
+    }));
+
+    // ✅ DB에서 이미 days_passed, expected_count, success_ratio, current_count 컬럼을 관리
+    // 클라이언트에서 추가 계산할 필요 없음
+    setTasks(tasksWithVacation);
   };
 
   useEffect(() => {
@@ -316,6 +348,11 @@ export default function Home() {
                     {task.interval_days}일에 {task.target_count}번 씩 하기로 결심!!
                   </strong>
                 </p>
+                {task.activeVacation && (
+                  <div style={{ marginBottom: '0.5rem' }}>
+                    <VacationBadge startDate={task.activeVacation.start_date} endDate={task.activeVacation.end_date} />
+                  </div>
+                )}
                 {/* <p>상태: {task.status}</p> */}
                 <div
                   style={{
