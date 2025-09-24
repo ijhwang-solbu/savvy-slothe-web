@@ -18,6 +18,13 @@ const getKstTodayDateString = () => {
   return kstDate.toISOString().slice(0, 10);
 };
 
+const formatDateToYYMMDD = (dateString) => {
+  if (!dateString) return '';
+  const [year, month, day] = dateString.split('-');
+  if (!year || !month || !day) return '';
+  return `${year.slice(-2)}.${month}.${day}`;
+};
+
 export default function TaskHistoryPage() {
   const router = useRouter();
   const params = useParams();
@@ -126,6 +133,20 @@ export default function TaskHistoryPage() {
     setIsVacationDialogOpen(true);
   };
 
+  const handleCancelScheduledVacation = async () => {
+    if (!scheduledVacation || !user?.id) return;
+
+    const { error } = await supabase.from('task_vacations').delete().eq('id', scheduledVacation.id).eq('task_id', taskId).eq('user_id', user.id);
+
+    if (error) {
+      alert('방학 취소에 실패했습니다.');
+      return;
+    }
+
+    await fetchVacation();
+    await fetchHistory();
+  };
+
   const handleCloseVacationDialog = () => {
     setIsVacationDialogOpen(false);
   };
@@ -215,12 +236,22 @@ export default function TaskHistoryPage() {
                 <span style={{ fontSize: '0.85rem', color: '#4b5563' }}>방학 기간에도 체크는 가능하며 성공률 계산에서 제외돼요.</span>
               </>
             ) : (
-              <>
-                <Button variant='primary' onClick={handleOpenVacationDialog}>
-                  {scheduledVacation ? '방학 수정' : '방학 신청'}
-                </Button>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', alignItems: 'flex-start' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+                  <Button variant='primary' onClick={handleOpenVacationDialog}>
+                    {scheduledVacation ? `방학 수정` : '방학 신청'}
+                  </Button>
+                  {scheduledVacation && (
+                    <>
+                      <Button variant='danger' onClick={handleCancelScheduledVacation}>
+                        방학 취소
+                      </Button>
+                      <span style={{ fontSize: '0.85rem', color: '#4b5563' }}>{formatDateToYYMMDD(scheduledVacation.start_date)} 시작예정</span>
+                    </>
+                  )}
+                </div>
                 <span style={{ fontSize: '0.85rem', color: '#4b5563' }}>방학기간(50일)동안 밀린 페이스를 끌어올려봐요. like 계절학기</span>
-              </>
+              </div>
             )}
           </div>
           <p>기록 수: {executions.length}건</p>

@@ -27,7 +27,7 @@ const getTomorrowString = () => {
 };
 
 export default function VacationDialog({ open, onClose, onSave, defaultStartDate, mode = 'create' }) {
-  const minimumStartDate = useMemo(() => defaultStartDate || getTomorrowString(), [defaultStartDate]);
+  const minimumStartDate = useMemo(() => getTomorrowString(), []);
 
   const [startDate, setStartDate] = useState(minimumStartDate);
   const [isSaving, setIsSaving] = useState(false);
@@ -115,7 +115,7 @@ export default function VacationDialog({ open, onClose, onSave, defaultStartDate
             type='date'
             value={startDate || ''}
             onChange={handleStartDateChange}
-            min={minimumStartDate}
+            min={minimumStartDate} // ✅내일부터만 선택 가능
             style={{
               border: '1px solid #d1d5db',
               borderRadius: '8px',
