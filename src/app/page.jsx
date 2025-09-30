@@ -331,7 +331,7 @@ export default function Home() {
                   // Width: '100%px',
                   position: 'relative',
                 }}>
-                <svg className='absolute inset-0 w-full h-full pointer-events-none' viewBox='0 0 100 100' preserveAspectRatio='none' aria-hidden='true' style={{ zIndex: 0 }}>
+                <svg className='absolute inset-0 w-full h-full pointer-events-none' viewBox='0 0 323 296' preserveAspectRatio='none' aria-hidden='true' style={{ zIndex: 0 }}>
                   <use href='#task-card-border' />
                 </svg>
                 {/* 휴지통 아이콘 */}
