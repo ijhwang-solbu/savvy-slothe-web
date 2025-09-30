@@ -1,9 +1,11 @@
 // 목적: 날짜 셀 UI와 상태(오늘/개수)를 단순 시각화
 // 원리: count>0이면 점 또는 숫자 노출
 import React from 'react';
+const kstDateFormatter = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Seoul' });
+const getKstTodayDateString = () => kstDateFormatter.format(new Date());
 
 export default function DayCell({ dateKey, day, count, onClick }) {
-  const isToday = dateKey === new Date().toISOString().slice(0, 10);
+  const isToday = dateKey === getKstTodayDateString();
 
   const maxDots = 3; // ✅ 여기서 먼저 선언해줍니다
   const overflowCount = count > maxDots ? count - maxDots : 0;
