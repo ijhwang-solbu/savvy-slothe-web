@@ -7,6 +7,8 @@ const getKstTodayDateString = () => kstDateFormatter.format(new Date());
 export default function DayCell({ dateKey, day, count, onClick }) {
   const isToday = dateKey === getKstTodayDateString();
 
+  // console.log('DayCell debug:', { rawKey: dateKey, isToday, count });
+
   const maxDots = 3; // ✅ 여기서 먼저 선언해줍니다
   const overflowCount = count > maxDots ? count - maxDots : 0;
 

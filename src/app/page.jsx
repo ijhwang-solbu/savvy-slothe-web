@@ -15,6 +15,7 @@ import usePwaInstallPrompt from '@/hooks/usePwaInstallPrompt';
 import InstallPrompt from '@/components/InstallPrompt';
 import MainCalendarPanel from '@/components/Main/MainCalendarPanel';
 import VacationBadge from '@/components/Task/VacationBadge';
+import DayManageDialog from '@/components/Main/DayManageDialog';
 
 export default function Home() {
   //PWA 설치
@@ -27,6 +28,9 @@ export default function Home() {
   const router = useRouter(); // ✅ Next.js 라우터 훅
   const [tasks, setTasks] = useState([]);
   const [user, setUser] = useState(null);
+  const [selectedDayKey, setSelectedDayKey] = useState(null);
+  const [isDayManageDialogOpen, setIsDayManageDialogOpen] = useState(false);
+  const [statsMap, setStatsMap] = useState({});
 
   /* ==========================================
  모달 폼 입력 값
@@ -218,12 +222,11 @@ export default function Home() {
 
   //달력 컴포넌트 정의
   const handleSelectDay = (dateKey) => {
-    // TODO: DayManageDialog 열기 (다음 단계에서 구현)
-    console.log('select day', dateKey);
+    setSelectedDayKey(dateKey);
+    setIsDayManageDialogOpen(true);
   };
 
   // 10.달력 바로 동기화
-  const [statsMap, setStatsMap] = useState({});
   ////10. ✅ 추가: 실행 완료된 날짜를 즉시 반영하는 로컬 업데이트 함수
   const handleComplete = (dateKey) => {
     setStatsMap((prev) => {
@@ -236,6 +239,26 @@ export default function Home() {
   const handleCalendarUpdate = (dateKey) => {
     handleComplete(dateKey); // 달력 즉시 반영
     fetchTasks?.(); // task 리스트도 새로고침
+  };
+
+  const closeDayManageDialog = () => {
+    setIsDayManageDialogOpen(false);
+    setSelectedDayKey(null);
+  };
+
+  const handleDayManageSaved = (dateKey, checkedTaskIds) => {
+    setStatsMap((prev) => {
+      const next = { ...prev };
+      const count = Array.isArray(checkedTaskIds) ? checkedTaskIds.length : 0;
+      if (count > 0) {
+        next[dateKey] = count;
+      } else {
+        delete next[dateKey];
+      }
+      return next;
+    });
+    fetchTasks();
+    closeDayManageDialog();
   };
 
   /* ==========================================
@@ -254,6 +277,7 @@ export default function Home() {
             />
           </symbol>
         </svg>
+        <DayManageDialog isOpen={isDayManageDialogOpen} dateKey={selectedDayKey} tasks={tasks} userId={user?.id} onClose={closeDayManageDialog} onSaved={handleDayManageSaved} />
         <Modal isOpen={showDeleteModal} onClose={closeDeleteModal}>
           <h3 style={{ marginBottom: '0.5rem' }}>{deleteMessage}</h3>
           <p style={{ marginBottom: '1rem' }}>그런거야..?</p>

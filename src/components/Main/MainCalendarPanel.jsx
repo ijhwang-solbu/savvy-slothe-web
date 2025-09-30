@@ -4,23 +4,46 @@
 'use client';
 import { useEffect, useState } from 'react';
 import CalendarGrid from '../Calendar/CalendarGrid';
-import { supabase } from '@/lib/supabase'; // 레포 경로에 맞게 조정
+import { supabase } from '@/lib/supabase'; // 경로에 맞게 조정
+
+const kstDateFormatter = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Seoul' });
+const toKstDateKey = (value) => {
+  if (!value) return '';
+
+  let source = value;
+  if (!(value instanceof Date)) {
+    const raw = typeof value === 'string' ? value.trim() : '';
+    if (!raw) return '';
+    const hasTimeSeparator = raw.includes('T');
+    const hasZoneInfo = /Z|[+-]\d{2}:?\d{2}$/.test(raw);
+    if (!hasTimeSeparator) {
+      source = `${raw}T00:00:00+09:00`;
+    } else if (!hasZoneInfo) {
+      source = `${raw}+09:00`;
+    } else {
+      source = raw;
+    }
+  }
+
+  const date = new Date(source);
+  if (Number.isNaN(date.getTime())) return '';
+  return kstDateFormatter.format(date);
+};
 
 export default function MainCalendarPanel({ statsMap, setStatsMap, onSelectDay }) {
   const today = new Date();
   const [year, setYear] = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth()); // 0~11
   // const [statsMap, setStatsMap] = useState({}); // {'2025-09-04': 3, ...}
-  const monthStart = new Date(year, month, 1);
-  const monthEnd = new Date(year, month + 1, 1);
-
   // 목적: 월 범위의 일자별 실행 개수를 로드
   useEffect(() => {
     // 원리: task_executions에서 해당 월 범위로 distinct task_id count 그룹화
     const load = async () => {
-      const from = monthStart.toISOString();
-      const to = monthEnd.toISOString();
-      const { data, error } = await supabase.from('task_executions').select('task_id, executed_at').gte('executed_at', from).lt('executed_at', to);
+      const startKey = `${year}-${String(month + 1).padStart(2, '0')}-01`;
+      const nextMonthDate = new Date(year, month + 1, 1);
+      const endKey = `${nextMonthDate.getFullYear()}-${String(nextMonthDate.getMonth() + 1).padStart(2, '0')}-01`;
+
+      const { data, error } = await supabase.from('task_executions').select('task_id, executed_at').gte('executed_at', startKey).lt('executed_at', endKey);
 
       if (error) {
         console.error(error);
@@ -30,7 +53,8 @@ export default function MainCalendarPanel({ statsMap, setStatsMap, onSelectDay }
       // ✅ KST 기준으로 날짜별 distinct task_id 집계
       const map = {};
       data.forEach((row) => {
-        const dateKey = row.executed_at.slice(0, 10);
+        const dateKey = toKstDateKey(row.executed_at);
+        if (!dateKey) return;
         if (!map[dateKey]) map[dateKey] = new Set();
         map[dateKey].add(row.task_id);
       });

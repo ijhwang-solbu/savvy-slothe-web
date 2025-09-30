@@ -233,7 +233,7 @@ export default function TaskHistoryPage() {
             {activeVacation ? (
               <>
                 <VacationBadge startDate={activeVacation.start_date} endDate={activeVacation.end_date} />
-                <span style={{ fontSize: '0.85rem', color: '#dfdfdfff' }}>방학 기간에도 체크는 가능하며 성공률 계산에서 제외돼요.</span>
+                <span style={{ fontSize: '0.85rem', color: '#dfdfdfff' }}>방학 기간에 결심을 수행하면 페이스가 더 빨리 올라가요.</span>
               </>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', alignItems: 'flex-start' }}>
