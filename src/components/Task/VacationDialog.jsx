@@ -121,6 +121,7 @@ export default function VacationDialog({ open, onClose, onSave, defaultStartDate
               borderRadius: '8px',
               padding: '10px 12px',
               fontSize: '0.95rem',
+              color: '#000',
             }}
           />
 

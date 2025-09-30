@@ -16,7 +16,9 @@ export default function PageLayout({ children, showLogo = true, showLogout = tru
         maxWidth: '800px',
         minWidth: '300px',
         margin: '0 auto',
-        // backgroundColor: '#000000',
+        backgroundColor: '#111',
+        minHeight: '100vh',
+        color: '#ffffff',
       }}>
       {/* Header */}
       {(showLogo || showLogout) && (

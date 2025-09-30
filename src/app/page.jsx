@@ -121,11 +121,7 @@ export default function Home() {
   const fetchTasks = async () => {
     if (!user?.id) return;
 
-    const { data, error } = await supabase
-      .from('tasks')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: false });
+    const { data, error } = await supabase.from('tasks').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
 
     if (error) {
       console.error('태스크 조회 오류:', error);
@@ -137,10 +133,7 @@ export default function Home() {
       return;
     }
 
-    const { data: vacationData, error: vacationError } = await supabase
-      .from('task_vacations')
-      .select('task_id, start_date, end_date')
-      .eq('user_id', user.id);
+    const { data: vacationData, error: vacationError } = await supabase.from('task_vacations').select('task_id, start_date, end_date').eq('user_id', user.id);
 
     if (vacationError) {
       console.error('방학 정보 조회 오류:', vacationError);

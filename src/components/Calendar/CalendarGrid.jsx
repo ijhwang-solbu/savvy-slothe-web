@@ -34,7 +34,7 @@ export default function CalendarGrid({ year, month, statsMap, onSelectDay }) {
     <div className='grid grid-cols-7 gap-1'>
       {/* 🗓️ 요일 헤더 */}
       {['일', '월', '화', '수', '목', '금', '토'].map((day) => (
-        <div key={day} className='text-center font-semibold text-sm text-gray-600'>
+        <div key={day} className='text-center font-semibold text-sm text-gray-300'>
           {day}
         </div>
       ))}

@@ -233,7 +233,7 @@ export default function TaskHistoryPage() {
             {activeVacation ? (
               <>
                 <VacationBadge startDate={activeVacation.start_date} endDate={activeVacation.end_date} />
-                <span style={{ fontSize: '0.85rem', color: '#4b5563' }}>방학 기간에도 체크는 가능하며 성공률 계산에서 제외돼요.</span>
+                <span style={{ fontSize: '0.85rem', color: '#dfdfdfff' }}>방학 기간에도 체크는 가능하며 성공률 계산에서 제외돼요.</span>
               </>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', alignItems: 'flex-start' }}>
@@ -246,11 +246,11 @@ export default function TaskHistoryPage() {
                       <Button variant='danger' onClick={handleCancelScheduledVacation}>
                         방학 취소
                       </Button>
-                      <span style={{ fontSize: '0.85rem', color: '#4b5563' }}>{formatDateToYYMMDD(scheduledVacation.start_date)} 시작예정</span>
+                      <span style={{ fontSize: '0.85rem', color: '#dfdfdfff' }}>{formatDateToYYMMDD(scheduledVacation.start_date)} 시작예정</span>
                     </>
                   )}
                 </div>
-                <span style={{ fontSize: '0.85rem', color: '#4b5563' }}>방학기간(50일)동안 밀린 페이스를 끌어올려봐요. like 계절학기</span>
+                <span style={{ fontSize: '0.85rem', color: '#dfdfdfff' }}>방학기간(50일)동안 밀린 페이스를 끌어올려봐요. like 계절학기</span>
               </div>
             )}
           </div>
