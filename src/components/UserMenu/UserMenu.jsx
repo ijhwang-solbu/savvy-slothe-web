@@ -5,8 +5,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { createClient } from '@supabase/supabase-js';
 import styles from './UserMenu.module.css';
 
-// 필요 시 환경변수 혹은 공용 클라이언트를 사용하세요.
-const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY);
 
 // Kakao 메타데이터 다양한 케이스를 안전하게 처리
 function pickAvatarUrl(meta) {
