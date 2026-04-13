@@ -101,11 +101,11 @@ export default function Login() {
           <p style={{ marginBottom: '10px', fontSize: '1.1rem' }}>
             <strong>오늘도 미뤄볼까, 벼락치기 페이스메이커</strong>
           </p>
-          <p>&quot; 20일의 여유와 <strong>10일의 몰입</strong>. &quot;</p>
-          <p>&quot; 보름의 공백과 <strong>일주일의 질주</strong>. &quot;</p>
-          <p>&quot; 무엇이든 당신만의 방법으로 &quot;</p>
-          <p>&quot; <strong>3일에 한 번</strong>의 페이스를 만들어보세요. &quot;</p>
-          <p>&quot; 조금 나태해도 괜찮은 이곳은, <strong>작심삼일</strong>. &quot;</p>
+          <p>20일의 여유와 <strong>10일의 몰입</strong>.</p>
+          <p>보름의 공백과 <strong>일주일의 질주</strong>.</p>
+          <p>무엇이든 당신만의 방법으로 </p>
+          <p><strong>3일에 한 번</strong>의 페이스를 만들어보세요.</p>
+          <p>&quot;조금 나태해도 괜찮은 이곳은, <strong>작심삼일</strong>. &quot;</p>
         </div>
 
         {/* <h3>로그인해 주세요.</h3>
