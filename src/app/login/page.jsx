@@ -99,11 +99,13 @@ export default function Login() {
         {/* <h1>안녕하세요. Savvy-Sloth입니다.</h1> */}
         <div style={{ marginBottom: '10px', marginTop: '10px' }}>
           <p style={{ marginBottom: '10px', fontSize: '1.1rem' }}>
-            <strong>적당히 나태한 결심 관리 프로젝트</strong>
+            <strong>오늘도 미뤄볼까, 벼락치기 페이스메이커</strong>
           </p>
-          <p>&quot; 가끔은 쉬면 어때 &quot;</p>
-          <p>&quot; 바짝 달려서 따라잡으면 되잖아. &quot;</p>
-          <p>&quot; 나만의 페이스로 달리면 돼. &quot;</p>
+          <p>&quot; 20일의 여유와 <strong>10일의 몰입</strong>. &quot;</p>
+          <p>&quot; 보름의 공백과 <strong>일주일의 질주</strong>. &quot;</p>
+          <p>&quot; 무엇이든 당신만의 방법으로 &quot;</p>
+          <p>&quot; <strong>3일에 한 번</strong>의 페이스를 만들어보세요. &quot;</p>
+          <p>&quot; 조금 나태해도 괜찮은 이곳은, <strong>작심삼일</strong>. &quot;</p>
         </div>
 
         {/* <h3>로그인해 주세요.</h3>

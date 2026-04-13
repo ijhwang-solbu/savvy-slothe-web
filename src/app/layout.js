@@ -12,8 +12,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: '작심삼일 - 삼일에 한번 하기',
-  description: '3일에 한번만 해도 성공한 인생, 조금은 미뤄도 되는 결심 관리 앱',
+  title: '작심삼일 - 3일에 한 번만',
+  description: '3일에 한번만 해도 성공한 인생, 조금 이뤄도 괜찮은 벼락치기 페이스메이커',
   robots: 'index, follow',
 };
 
